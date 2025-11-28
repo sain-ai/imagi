@@ -2,80 +2,299 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>디지털 브릿지 프로젝트</title>
+  <title>모르면 바로 알려주는 디지털 사용법 도우미</title>
   <style>
+    * { box-sizing: border-box; }
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
-      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: #f5f5f7;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
     }
-    .card {
+    .app {
       background: #ffffff;
-      padding: 24px 28px;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-      max-width: 420px;
-      width: 90%;
+      width: 100%;
+      max-width: 980px;
+      min-height: 540px;
+      padding: 24px 26px;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
     }
-    .tag {
+    .app-header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .badge {
       display: inline-block;
-      font-size: 12px;
       padding: 4px 10px;
       border-radius: 999px;
+      font-size: 11px;
       background: #e5f0ff;
       color: #2457ff;
-      margin-bottom: 10px;
     }
-    h1 {
-      font-size: 20px;
-      margin: 0 0 8px;
+    .title {
+      font-size: 22px;
+      font-weight: 700;
     }
-    p {
-      font-size: 14px;
-      margin: 0 0 12px;
-      line-height: 1.5;
+    .subtitle {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .body {
+      display: grid;
+      grid-template-columns: 1.1fr 1.9fr;
+      gap: 18px;
+    }
+    @media (max-width: 800px) {
+      .body { grid-template-columns: 1fr; }
+    }
+
+    .left-card, .right-card {
+      background: #f8f9ff;
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+    .left-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .left-text {
+      font-size: 13px;
       color: #444;
+      line-height: 1.6;
     }
-    .steps {
-      margin: 10px 0 16px;
+    .left-list {
+      margin: 6px 0 0;
       padding-left: 18px;
       font-size: 13px;
-      color: #333;
+      color: #444;
     }
-    button {
-      border: none;
-      padding: 10px 16px;
+
+    .right-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 3px 8px;
       border-radius: 999px;
-      font-size: 14px;
-      cursor: pointer;
-      background: #2457ff;
-      color: white;
+      background: #ffffff;
+      font-size: 11px;
+      color: #555;
+      border: 1px solid #dde1ff;
     }
-    button:hover {
-      opacity: 0.9;
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .query-input {
+      flex: 1 1 220px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid #d0d4f0;
+      font-size: 13px;
+      outline: none;
+    }
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #2457ff;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(36,87,255,0.5);
+      white-space: nowrap;
+    }
+    .btn.secondary {
+      background: #ffffff;
+      color: #333;
+      border: 1px solid #d0d4f0;
+      box-shadow: none;
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .status {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 6px;
+      min-height: 16px;
+    }
+
+    .result-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid #e0e2f5;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #333;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .result-section-title {
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+    .result-text {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .result-highlight {
+      font-weight: 600;
+      color: #2457ff;
+    }
+    .steps-list {
+      margin: 4px 0 0;
+      padding-left: 18px;
+      font-size: 13px;
+    }
+    .grandchild-msg {
+      background: #f8f9ff;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #444;
+    }
+
+    .footer-note {
+      font-size: 11px;
+      color: #888;
+      margin-top: 4px;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="tag">프로젝트 소개</div>
-    <h1>디지털 브릿지 프로젝트</h1>
-    <p>
-      디지털 취약계층의 디지털 소외를 해결하기 위한 프로그램입니다.
-    </p>
-    <ol class="steps">
-      <li>~알려주기</li>
-      <li>~해보기</li>
-      <li>~등등</li>
-    </ol>
-    <button onclick="alert('참여 신청 페이지는 추후 오픈 예정입니다 😊')">
-      참여 안내 보기
-    </button>
+  <div class="app">
+    <div class="app-header">
+      <span class="badge">디지털 브릿지 · 예시 UI</span>
+      <div class="title">모르면 바로 알려주는 디지털 사용법 도우미</div>
+      <div class="subtitle">
+        어르신이 모르는 내용을 <b>말하거나(음성)</b>, <b>채팅처럼 적으면</b> 사용법을 먼저 간단하게 설명해주고,
+        그래도 헷갈리는 경우 관련 가전제품을 함께 추천하며 손주에게 도움 요청까지 이어지는 흐름을 보여주는 프로토타입입니다.
+      </div>
+    </div>
+
+    <div class="body">
+      <!-- 왼쪽 설명 -->
+      <div class="left-card">
+        <div class="left-title">전체 사용 흐름</div>
+        <div class="left-text">
+          이 앱은 <b>“사용법 안내가 메인”</b>입니다. 어르신은 이렇게 사용할 수 있습니다.
+        </div>
+        <ul class="left-list">
+          <li>1단계: “모르는 것”을 말하거나(🎤) 채팅처럼 적습니다.</li>
+          <li>2단계: 화면에 <b>3~4단계로 정리된 사용법</b>이 먼저 나옵니다.</li>
+          <li>3단계: 같은 고민을 반복하면, 관련 가전/기능을 함께 추천합니다.</li>
+          <li>4단계: 그래도 어렵다고 할 때는, 손주에게 도움 요청 알림을 보냅니다.</li>
+        </ul>
+        <div class="left-text" style="margin-top:8px;">
+          예시 문장<br />
+          • “밥이 자꾸 눌어붙는데 밥솥 어떻게 써야 해?”<br />
+          • “집이 너무 건조해… 뭐가 필요할까?”<br />
+          • “청소가 힘든데 쉬운 방법 없어?”<br />
+        </div>
+      </div>
+
+      <!-- 오른쪽 기능 -->
+      <div class="right-card">
+        <div class="right-title">
+          💬/🎤 모르는 사용법 물어보기
+          <span class="pill">사용법 안내가 메인 · 추천은 보조</span>
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <div class="input-row">
+          <input
+            type="text"
+            id="queryInput"
+            class="query-input"
+            placeholder="예: 밥이 자꾸 눌어붙는데 밥솥 어떻게 써야 해요? / 집이 너무 건조해요"
+          />
+          <button class="btn secondary" id="runTextBtn">💬 채팅으로 보내기</button>
+          <button class="btn" id="voiceBtn">🎤 음성으로 말하기</button>
+        </div>
+
+        <div class="result-card" id="resultCard">
+          <div>
+            <div class="result-section-title">① 어르신 말씀</div>
+            <div class="result-text" id="resultQuery"></div>
+          </div>
+
+          <div>
+            <div class="result-section-title">② 먼저 알려드리는 사용법 안내 (메인 기능)</div>
+            <div class="result-text" id="usageTitle"></div>
+            <ol class="steps-list" id="usageSteps"></ol>
+          </div>
+
+          <div id="recommendBlock" style="display:none;">
+            <div class="result-section-title">③ 필요하다면 이런 가전/기능도 도움이 됩니다</div>
+            <div class="result-text">
+              <span class="result-highlight" id="resultDevice"></span>
+            </div>
+            <div class="result-text" id="resultExplanation" style="margin-top:4px;"></div>
+          </div>
+
+          <div>
+            <div class="result-section-title">④ 손주에게 갈 알림(예시)</div>
+            <div class="grandchild-msg" id="grandchildMsg"></div>
+          </div>
+        </div>
+
+        <div class="footer-note">
+          ※ 실제 서비스라면, 사용법 안내를 먼저 제공하고, 같은 질문이 반복될 때
+          관련 가전/기능 추천과 함께 손주에게 자동 알림(카톡·문자 등)을 보내는 구조로 확장할 수 있습니다.
+        </div>
+      </div>
+    </div>
   </div>
-</body>
-</html>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const queryInput = document.getElementById("queryInput");
+    const resultCard = document.getElementById("resultCard");
+    const resultQuery = document.getElementById("resultQuery");
+    const usageTitle = document.getElementById("usageTitle");
+    const usageStepsEl = document.getElementById("usageSteps");
+    const recommendBlock = document.getElementById("recommendBlock");
+    const resultDevice = document.getElementById("resultDevice");
+    const resultExplanation = document.getElementById("resultExplanation");
+    const grandchildMsg = document.getElementById("grandchildMsg");
+    const voiceBtn = document.getElementById("voiceBtn");
+    const runTextBtn = document.getElementById("runTextBtn");
+
+    function analyzeQuery(text) {
+      const q = text.toLowerCase();
+
+      // 기본값 (매칭 안 될 때)
+      let usageTitle = "상황을 조금 더 자세히 듣고 싶어요.";
+      let usageSteps = [
+        "1) 어떤 기기에서, 무엇을 하다가 막히셨는지 한 번 더 말씀해 주세요.",
+        "2) 예: '세탁기에서 이불 빨래하고 싶은데 어떤 버튼을 눌
