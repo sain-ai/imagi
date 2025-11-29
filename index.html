@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>PROJECT – DigitalBridge (Matched Call Ver.)</title>
+  <title>PROJECT – DigitalBridge (Azar Style)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <style>
     /* --- [1. 기본 설정 & 프레임] --- */
@@ -181,7 +181,7 @@
     .voice-nav-text { font-size: 22px; font-weight: 700; color: #fff; }
     .voice-nav-sub { font-size: 16px; color: #9ca3af; }
     
-    /* 손주 모드 대시보드 */
+    /* [손주 모드 대시보드 (Azar 스타일)] */
     .gc-dashboard { display: flex; flex-direction: column; gap: 16px; flex: 1; overflow-y:auto; padding-bottom:10px; }
     .gc-card { background: rgba(30,41,59,0.5); border-radius: 16px; padding: 20px; border: 1px solid rgba(75,85,99,0.4); }
     .gc-card-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #e5e7eb; display: flex; justify-content: space-between; align-items:center; }
@@ -193,6 +193,12 @@
     .log-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
     .log-header { display: flex; justify-content: space-between; font-size: 12px; color: #9ca3af; }
     .log-content { font-size: 14px; color: #e5e7eb; }
+
+    /* 레이더 스캔 애니메이션 (대기 중) */
+    .radar-scanner { width: 140px; height: 140px; background: rgba(56,189,248,0.1); border-radius: 50%; border: 1px solid rgba(56,189,248,0.3); position: relative; display: flex; justify-content: center; align-items: center; margin: 20px auto; }
+    .radar-scanner::after { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(transparent, rgba(56,189,248,0.4)); animation: radarSpin 2s linear infinite; }
+    @keyframes radarSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .radar-status { font-size: 18px; font-weight: 700; color: #38bdf8; text-align: center; margin-top: 10px; }
 
     /* 피드백(평가) 화면 */
     .feedback-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; }
@@ -315,7 +321,7 @@
               <div class="info-card-title" style="color:#f87171;">긴급 도움 요청 (봉사자 연결)</div>
               <div>🚨</div>
             </div>
-            <div class="info-card-text">누르면 대기 중인 봉사자(손주)와 화상 통화가 연결됩니다.</div>
+            <div class="info-card-text">누르면 접속 중인 봉사자와 바로 연결됩니다.</div>
           </div>
         </div>
 
@@ -348,7 +354,7 @@
 
     <div id="screen-emergency" class="screen">
       <div class="call-ui">
-        <div class="camera-feed" id="camera-feed">[ 봉사자(손주) 얼굴 ]<br/>연결되었습니다.</div>
+        <div class="camera-feed" id="camera-feed">[ 봉사자 얼굴 ]<br/>연결되었습니다.</div>
         <div class="call-avatar" id="video-avatar">🧑‍💻</div>
         <div class="call-status" id="call-status">봉사자 찾는 중...</div>
         <div class="call-timer" id="call-timer">00:00</div>
@@ -360,7 +366,7 @@
       <div class="feedback-ui">
         <div style="font-size:20px; font-weight:700;">문제는 해결되셨나요?</div>
         <div style="color:#cbd5f5; font-size:15px; line-height:1.4;">
-          방금 도와드린 '김손주' 학생이<br/>친절했는지 평가해주세요.
+          방금 도와드린 봉사자 학생이<br/>친절했는지 평가해주세요.
         </div>
         <div class="stars">⭐⭐⭐⭐⭐</div>
         <button class="feedback-btn" onclick="finishFeedback()">평가 완료</button>
@@ -373,11 +379,14 @@
         <span class="page-title">손주 모드 (봉사자)</span>
       </div>
       <div class="gc-dashboard">
-        <div class="gc-card" style="border-color:#22c55e;">
-          <div class="gc-card-title"><span>매칭된 어르신</span><span style="color:#22c55e;">● 접속 중</span></div>
-          <div style="font-size:16px; font-weight:700; color:#fff; margin-bottom:4px;">박옥자 할머니 (78세)</div>
-          <div style="font-size:13px; color:#cbd5f5;">
-            "밥솥 기능이 궁금하다"고 하십니다.<br/>자주 확인해주세요.
+        
+        <div style="text-align:center; padding: 20px 0;">
+          <div class="radar-scanner">
+            <div style="font-size:40px;">📡</div>
+          </div>
+          <div class="radar-status">매칭 대기 중...</div>
+          <div style="font-size:13px; color:#cbd5f5; margin-top:6px;">
+            도움이 필요한 어르신이 생기면<br/>알림이 울립니다.
           </div>
         </div>
 
@@ -410,32 +419,18 @@
         </div>
 
         <div class="gc-card">
-          <div class="gc-card-title">내 봉사 기록</div>
+          <div class="gc-card-title">내가 도와드린 내역</div>
           <div id="gc-log-list">
             <div class="log-item">
               <div class="log-header"><span>2024.11.20</span><span>완료</span></div>
-              <div class="log-content">박옥자 할머니의 '밥솥 취사' 문의를 해결해 드렸습니다.</div>
+              <div class="log-content">박OO 어르신의 '키오스크 주문' 문의를 해결해 드렸습니다.</div>
             </div>
             <div class="log-item">
               <div class="log-header"><span>2024.11.18</span><span>완료</span></div>
-              <div class="log-content">김철수 할아버지와 15분간 말벗 봉사를 진행했습니다.</div>
+              <div class="log-content">김OO 어르신과 15분간 말벗 봉사를 진행했습니다.</div>
             </div>
           </div>
         </div>
-
-        <button class="home-btn" style="flex:0; margin-top:auto; background:#0f766e; justify-content:center;" onclick="startGrandparentCall()">
-          <span style="font-weight:bold;">박옥자 할머니께 전화 걸기</span>
-        </button>
-      </div>
-    </div>
-
-    <div id="screen-audio-call" class="screen">
-      <div class="call-ui">
-        <div class="call-avatar">👵</div>
-        <div class="call-status" id="gp-call-status">연결 중...</div>
-        <div class="call-timer" id="gp-call-timer">00:00</div>
-        <div style="margin-bottom:30px; color:#9ca3af; font-size:14px;">음성 통화 중입니다</div>
-        <button class="hangup-btn" onclick="endCall()">📞</button>
       </div>
     </div>
 
@@ -499,7 +494,7 @@
     function startFaqFlow() { const l=document.getElementById('list-faq'); l.innerHTML=''; faqData.forEach(i=>{ l.innerHTML+=`<div class="list-item"><div style="display:flex; flex-direction:column; gap:6px;"><span class="list-text" style="font-size:16px;">Q. ${i.q}</span><span style="font-size:14px; color:#9ca3af;">A. ${i.a}</span></div></div>`; }); goToScreen('screen-faq'); }
     function startPopularFlow() { const l=document.getElementById('list-popular'); l.innerHTML=''; popularData.forEach(i=>{ l.innerHTML+=`<div class="list-item"><div style="display:flex; flex-direction:column; gap:6px;"><span class="list-text" style="font-size:16px;">${i.title}</span><span style="font-size:14px; color:#9ca3af;">${i.desc}</span></div></div>`; }); goToScreen('screen-popular'); }
 
-    // --- [조부모 -> 손주 긴급 호출] ---
+    // --- [긴급 도움 & 피드백 (Azar 매칭 시뮬레이션)] ---
     function startEmergencyCall() { 
       goToScreen('screen-emergency'); 
       document.getElementById('call-status').innerText="봉사자 찾는 중..."; 
@@ -507,6 +502,7 @@
       document.getElementById('camera-feed').classList.remove('connected'); 
       document.getElementById('video-avatar').style.display="flex"; 
       setTimeout(()=>{ 
+        // 매칭 성공 시뮬레이션
         document.getElementById('call-status').innerText="김손주 학생 (연결됨)"; 
         document.getElementById('camera-feed').classList.add('connected'); 
         document.getElementById('video-avatar').style.display="none"; 
@@ -516,34 +512,6 @@
     }
     function endCallAndFeedback() { clearInterval(callTimerIntv); goToScreen('screen-feedback'); }
     function finishFeedback() { alert("평가가 제출되었습니다. 감사합니다!"); goToScreen('screen-home'); }
-
-    // --- [NEW: 손주 -> 할머니 음성 전화] ---
-    function startGrandparentCall() {
-      goToScreen('screen-audio-call');
-      const status = document.getElementById('gp-call-status');
-      const timer = document.getElementById('gp-call-timer');
-      status.innerText = "연결 중...";
-      timer.innerText = "00:00";
-      
-      // 2초 후 연결 시뮬레이션
-      setTimeout(() => {
-        status.innerText = "박옥자 할머니 (연결됨)";
-        let s = 0;
-        clearInterval(callTimerIntv);
-        callTimerIntv = setInterval(() => {
-          s++;
-          let m = Math.floor(s/60);
-          let sec = s%60;
-          timer.innerText = `${m<10?'0'+m:m}:${sec<10?'0'+sec:sec}`;
-        }, 1000);
-      }, 2000);
-    }
-    
-    function endCall() {
-      clearInterval(callTimerIntv);
-      alert("통화가 종료되었습니다.");
-      goToScreen('screen-grandchild-home');
-    }
   </script>
 </body>
 </html>
