@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>PROJECT – DigitalBridge (Manual Match Ver.)</title>
+  <title>PROJECT – DigitalBridge (Interactive Feedback)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <style>
     /* --- [1. 기본 설정 & 프레임] --- */
@@ -200,10 +200,18 @@
     @keyframes radarSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .radar-status { font-size: 18px; font-weight: 700; color: #38bdf8; text-align: center; margin-top: 10px; }
 
-    /* 피드백(평가) 화면 */
-    .feedback-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; }
-    .stars { font-size: 32px; letter-spacing: 4px; cursor: pointer; color: #fbbf24; }
-    .feedback-btn { padding: 14px 40px; border-radius: 99px; background: #2563eb; color: white; border: none; font-size: 16px; font-weight: bold; cursor: pointer; }
+    /* [NEW] 피드백(평가) 화면 스타일 수정 */
+    .feedback-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; position: relative; }
+    /* 별점 컨테이너 */
+    .stars-container { display: flex; gap: 8px; }
+    .star { font-size: 36px; cursor: pointer; color: #4b5563; transition: color 0.2s; }
+    .star.filled { color: #fbbf24; }
+    .feedback-btn { padding: 14px 40px; border-radius: 99px; background: #2563eb; color: white; border: none; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+    .feedback-btn:active { background: #1d4ed8; }
+    /* 감사 메시지 (초기엔 숨김) */
+    .thankyou-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 700; color: #38bdf8; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; width: 100%; }
+    /* 피드백 입력 UI (감사 메시지 뜰 때 숨김) */
+    .feedback-input-ui { transition: opacity 0.5s ease; }
 
   </style>
 </head>
@@ -354,7 +362,7 @@
 
     <div id="screen-emergency" class="screen">
       <div class="call-ui">
-        <div class="camera-feed" id="camera-feed">[ 김손주님 얼굴 ]<br/>연결되었습니다.</div>
+        <div class="camera-feed" id="camera-feed">[ 김손주 얼굴 ]<br/>연결되었습니다.</div>
         <div class="call-avatar" id="video-avatar">🧑‍💻</div>
         <div class="call-status" id="call-status">손주님 찾는 중...</div>
         <div class="call-timer" id="call-timer">00:00</div>
@@ -364,12 +372,24 @@
     
     <div id="screen-feedback" class="screen center-layout">
       <div class="feedback-ui">
-        <div style="font-size:20px; font-weight:700;">문제는 해결되셨나요?</div>
-        <div style="color:#cbd5f5; font-size:15px; line-height:1.4;">
-          방금 도와드린 손주님이<br/>친절했는지 평가해주세요.
+        <div class="feedback-input-ui" id="fb-input-ui">
+          <div style="font-size:20px; font-weight:700; margin-bottom:10px;">문제는 해결되셨나요?</div>
+          <div style="color:#cbd5f5; font-size:15px; line-height:1.4; margin-bottom:20px;">
+            방금 도와드린 손주님이<br/>얼만큼 친절했는지 평가해주세요.
+          </div>
+          <div class="stars-container" style="margin-bottom:30px;">
+            <span class="star filled" onclick="rateStar(1)">★</span>
+            <span class="star filled" onclick="rateStar(2)">★</span>
+            <span class="star filled" onclick="rateStar(3)">★</span>
+            <span class="star filled" onclick="rateStar(4)">★</span>
+            <span class="star filled" onclick="rateStar(5)">★</span>
+          </div>
+          <button class="feedback-btn" onclick="finishFeedback()">평가 완료</button>
         </div>
-        <div class="stars">⭐⭐⭐⭐⭐</div>
-        <button class="feedback-btn" onclick="finishFeedback()">평가 완료</button>
+        
+        <div class="thankyou-msg" id="fb-thankyou-msg">
+          이용해주셔서 감사합니다!
+        </div>
       </div>
     </div>
 
@@ -399,7 +419,7 @@
             </div>
             <div class="radar-status">매칭 대기 중...</div>
             <div style="font-size:13px; color:#cbd5f5; margin-top:6px;">
-              도움이 필요한 어르신이 생기면<br/>알림이 울립니다.
+              도움이 필요한 어르신이 생기면<br/>자동으로 연결됩니다.
             </div>
             <button class="home-btn" style="background:#ef4444; margin-top:16px; padding:10px; min-height:40px; justify-content:center;" onclick="toggleMatching(false)">
               <span style="font-size:14px; font-weight:bold;">매칭 종료 (OFF)</span>
@@ -481,6 +501,7 @@
     const faqData = [{ q: "글자 크기가 작아요", a: "스마트폰 기초 > 기본 설정 확인하세요." }, { q: "와이파이 안 돼요", a: "상단바의 파란색 아이콘을 확인하세요." }];
     const popularData = [{ title: "TV 외부입력 바꾸기", desc: "화면이 안 나올 때" }, { title: "카카오톡 사진 보내기", desc: "손주에게 사진 전송" }];
     let currentCategory, currentBrand, currentModel, isRecording = false, callTimerIntv;
+    let currentRating = 5; // 현재 별점 (기본 5점)
 
     // --- [공통] ---
     function goToScreen(screenId) {
@@ -527,20 +548,52 @@
         callTimerIntv=setInterval(()=>{ s++; let m=Math.floor(s/60), sec=s%60; document.getElementById('call-timer').innerText=`${m<10?'0'+m:m}:${sec<10?'0'+sec:sec}`; },1000); 
       },2000); 
     }
-    function endCallAndFeedback() { clearInterval(callTimerIntv); goToScreen('screen-feedback'); }
-    function finishFeedback() { alert("평가가 제출되었습니다. 감사합니다!"); goToScreen('screen-home'); }
+    function endCallAndFeedback() { clearInterval(callTimerIntv); goToScreen('screen-feedback'); resetFeedbackUI(); }
+
+    // --- [NEW: 별점 평가 로직] ---
+    function rateStar(score) {
+      currentRating = score;
+      const stars = document.querySelectorAll('.feedback-ui .star');
+      stars.forEach((star, index) => {
+        if (index < score) {
+          star.classList.add('filled'); star.innerText = '★';
+        } else {
+          star.classList.remove('filled'); star.innerText = '☆';
+        }
+      });
+    }
+
+    function finishFeedback() {
+      const inputUI = document.getElementById('fb-input-ui');
+      const msgUI = document.getElementById('fb-thankyou-msg');
+      
+      // 1. 입력 UI 숨기고, 감사 메시지 표시
+      inputUI.style.opacity = '0';
+      msgUI.style.opacity = '1';
+
+      // 2. 2초 후 감사 메시지 숨기고 홈으로 이동
+      setTimeout(() => {
+        msgUI.style.opacity = '0';
+        setTimeout(() => {
+          goToScreen('screen-home');
+          resetFeedbackUI(); // 다음 사용을 위해 초기화
+        }, 500); // CSS transition 시간과 맞춤
+      }, 2000);
+    }
+
+    // 피드백 UI 초기화 함수
+    function resetFeedbackUI() {
+      document.getElementById('fb-input-ui').style.opacity = '1';
+      document.getElementById('fb-thankyou-msg').style.opacity = '0';
+      rateStar(5); // 별점 5점으로 초기화
+    }
 
     // --- [손주 모드: 수동 매칭 토글] ---
     function toggleMatching(isOn) {
       const startDiv = document.getElementById('gc-match-start');
       const radarDiv = document.getElementById('gc-match-radar');
-      if (isOn) {
-        startDiv.style.display = 'none';
-        radarDiv.style.display = 'block';
-      } else {
-        startDiv.style.display = 'block';
-        radarDiv.style.display = 'none';
-      }
+      if (isOn) { startDiv.style.display = 'none'; radarDiv.style.display = 'block'; } 
+      else { startDiv.style.display = 'block'; radarDiv.style.display = 'none'; }
     }
   </script>
 </body>
