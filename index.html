@@ -2,10 +2,10 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>PROJECT – DigitalBridge (Smart Nav & Voice Call)</title>
+  <title>PROJECT – DigitalBridge (Matched Call Ver.)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <style>
-    /* --- [1. 기본 설정] --- */
+    /* --- [1. 기본 설정 & 프레임] --- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       min-height: 100vh;
@@ -51,7 +51,7 @@
       padding: 20px;
     }
 
-    /* --- [3. 로더 & 스플래시] --- */
+    /* --- [3. UI 컴포넌트] --- */
     .loader { width: 72px; height: 72px; transform: rotate(-90deg); }
     .loader circle { fill: none; stroke-width: 4; stroke-linecap: round; }
     .loader-bg { stroke: rgba(148,163,184,0.35); }
@@ -63,7 +63,7 @@
     .splash-sub { font-size: 15px; color: #cbd5f5; margin-top: 6px; line-height: 1.5; text-align: center; }
     .loader-wrapper { margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #9ca3af; font-size: 13px; }
 
-    /* --- [4. 역할 선택] --- */
+    /* 역할 선택 */
     .role-wrapper { width: 100%; padding: 28px 16px; display: flex; flex-direction: column; align-items: center; gap: 24px; }
     .role-chip { font-size: 13px; padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.7); color: #cbd5f5; background: rgba(15,23,42,0.9); }
     .role-title { font-size: 22px; font-weight: 700; text-align: center; }
@@ -82,7 +82,7 @@
     .role-main { font-size: 17px; font-weight: 600; }
     .role-sub { font-size: 12px; color: #e5e7eb; opacity: 0.9; line-height: 1.4; }
 
-    /* --- [5. 메인 홈] --- */
+    /* 메인 홈 */
     .status-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #9ca3af; opacity: 0.9; margin-bottom: 8px; }
     .header { width: 100%; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .app-name { font-size: 21px; font-weight: 700; }
@@ -135,27 +135,20 @@
     }
     .voice-label { font-size: 13px; color: #9ca3af; text-align: center; }
 
-    /* --- [6. UI 요소들] --- */
+    /* --- [서브 기능 공통] --- */
     .header-nav { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid rgba(31,41,55,0.6); margin-bottom: 16px; }
     .back-btn { background: none; border: none; color: #e5e7eb; font-size: 24px; cursor: pointer; padding: 4px; }
     .page-title { font-size: 18px; font-weight: 600; }
-
     .list-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-    .list-item {
-      padding: 24px 20px; border-radius: 16px;
-      background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(75, 85, 99, 0.4);
-      display: flex; justify-content: space-between; align-items: center;
-      cursor: pointer; transition: 0.2s;
-    }
+    .list-item { padding: 24px 20px; border-radius: 16px; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(75, 85, 99, 0.4); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
     .list-item:active { background: #38bdf8; color: #000; }
     .list-text { font-size: 18px; font-weight: 500; }
-
     .guide-step { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 16px; border: 1px solid #374151; }
     .step-num { font-size: 15px; color: #38bdf8; font-weight: 700; margin-bottom: 8px; }
     .step-content { font-size: 17px; line-height: 1.5; color: #f3f4f6; }
     .step-img-box { margin-top: 12px; width: 100%; height: 140px; background: #0f172a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #475569; border: 1px dashed #475569; }
 
-    /* 채팅 및 입력창 공통 */
+    /* 채팅 */
     .chat-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-bottom: 10px; }
     .message { max-width: 85%; padding: 14px 18px; border-radius: 16px; font-size: 16px; line-height: 1.4; }
     .msg-ai { align-self: flex-start; background: #334155; color: #fff; border-bottom-left-radius: 2px; }
@@ -166,34 +159,45 @@
     .mic-btn { background: #dc2626; color: white; }
     .mic-btn.idle { background: #475569; }
     .send-btn { background: #38bdf8; color: #000; font-weight: bold; }
-    
     .result-card { background: linear-gradient(135deg, #1e293b 0, #0f172a 100%); padding: 18px; border-radius: 14px; border: 1px solid #38bdf8; margin-top: 8px; }
     .result-title { color: #38bdf8; font-weight: 700; margin-bottom: 6px; font-size: 17px; }
     .result-desc { font-size: 14px; color: #cbd5f5; margin-bottom: 12px; }
     .buy-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px; }
 
-    /* [NEW] 영상 통화 화면 스타일 */
-    .video-call-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-    .video-avatar { width: 120px; height: 120px; background: #475569; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 50px; margin-bottom: 20px; border: 4px solid #38bdf8; animation: pulse 2s infinite; }
+    /* 통화 UI (영상/음성 공통) */
+    .call-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; width: 100%; }
+    .call-avatar { width: 120px; height: 120px; background: #475569; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 50px; margin-bottom: 20px; border: 4px solid #38bdf8; animation: pulse 2s infinite; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(56, 189, 248, 0); } 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); } }
-    .call-status { font-size: 20px; font-weight: 600; margin-bottom: 10px; }
-    .call-timer { font-size: 14px; color: #9ca3af; margin-bottom: 40px; }
+    .call-status { font-size: 22px; font-weight: 600; margin-bottom: 10px; color: #f9fafb; }
+    .call-timer { font-size: 16px; color: #9ca3af; margin-bottom: 50px; }
     .hangup-btn { width: 70px; height: 70px; background: #ef4444; border-radius: 50%; border: none; color: white; font-size: 30px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 20px rgba(239,68,68,0.4); }
+    /* 조부모 모드 영상통화 배경 */
     .camera-feed { position: absolute; inset: 0; background: #1e293b; z-index: -1; border-radius: 20px; opacity: 0; transition: opacity 1s; display: flex; justify-content: center; align-items: center; color: #64748b; font-size: 18px; }
     .camera-feed.connected { opacity: 1; }
     
-    /* [NEW] 음성/채팅 내비게이션 화면 */
+    /* 음성 내비 */
     .voice-nav-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; width: 100%; }
     .voice-nav-icon { width: 100px; height: 100px; border-radius: 50%; background: #38bdf8; display: flex; justify-content: center; align-items: center; font-size: 40px; animation: pulse 1.5s infinite; color: #000; }
     .voice-nav-text { font-size: 22px; font-weight: 700; color: #fff; }
     .voice-nav-sub { font-size: 16px; color: #9ca3af; }
     
     /* 손주 모드 대시보드 */
-    .gc-dashboard { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+    .gc-dashboard { display: flex; flex-direction: column; gap: 16px; flex: 1; overflow-y:auto; padding-bottom:10px; }
     .gc-card { background: rgba(30,41,59,0.5); border-radius: 16px; padding: 20px; border: 1px solid rgba(75,85,99,0.4); }
-    .gc-card-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #e5e7eb; display: flex; justify-content: space-between; }
-    .log-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; font-size: 14px; color: #cbd5f5; }
-    .log-time { color: #9ca3af; font-size: 12px; min-width: 50px; }
+    .gc-card-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #e5e7eb; display: flex; justify-content: space-between; align-items:center; }
+    
+    .event-progress-bg { width: 100%; height: 8px; background: #1e293b; border-radius: 99px; overflow: hidden; margin-top: 10px; }
+    .event-progress-bar { width: 70%; height: 100%; background: linear-gradient(90deg, #38bdf8, #22c55e); }
+    .event-text { font-size: 12px; color: #9ca3af; margin-top: 6px; display: flex; justify-content: space-between; }
+    .log-item { display: flex; flex-direction: column; gap: 4px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 12px; }
+    .log-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .log-header { display: flex; justify-content: space-between; font-size: 12px; color: #9ca3af; }
+    .log-content { font-size: 14px; color: #e5e7eb; }
+
+    /* 피드백(평가) 화면 */
+    .feedback-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; }
+    .stars { font-size: 32px; letter-spacing: 4px; cursor: pointer; color: #fbbf24; }
+    .feedback-btn { padding: 14px 40px; border-radius: 99px; background: #2563eb; color: white; border: none; font-size: 16px; font-weight: bold; cursor: pointer; }
 
   </style>
 </head>
@@ -219,12 +223,12 @@
       <div class="role-wrapper">
         <div class="role-chip">DigitalBridge · 모드 선택</div>
         <div class="role-title">누구로 이용하시나요?</div>
-        <div class="role-desc">조부모님은 사용법 안내를,<br/>손주는 그 모습을 모니터링합니다.</div>
+        <div class="role-desc">조부모님은 사용법 안내를,<br/>청년 봉사자는 도움을 드립니다.</div>
         <div class="role-boxes">
           <div class="role-card" onclick="goToScreen('screen-grandchild-home')">
             <div class="role-card-icon">🧑‍💻</div>
             <div class="role-main">손주 모드</div>
-            <div class="role-sub">부모님 활동 확인<br/>및 긴급 연결</div>
+            <div class="role-sub">봉사 및 활동<br/>기록 확인</div>
           </div>
           <div class="role-card active" onclick="goToScreen('screen-loading2')">
             <div class="role-card-icon">👵</div>
@@ -308,10 +312,10 @@
           </div>
           <div class="info-card info-card-wide" style="border-color: rgba(239,68,68,0.5);" onclick="startEmergencyCall()">
             <div class="info-card-header">
-              <div class="info-card-title" style="color:#f87171;">긴급 도움! (손주 연결)</div>
+              <div class="info-card-title" style="color:#f87171;">긴급 도움 요청 (봉사자 연결)</div>
               <div>🚨</div>
             </div>
-            <div class="info-card-text">누르면 바로 손주와 화상 통화가 연결됩니다.</div>
+            <div class="info-card-text">누르면 대기 중인 봉사자(손주)와 화상 통화가 연결됩니다.</div>
           </div>
         </div>
 
@@ -323,126 +327,124 @@
     </div>
 
     <div id="screen-usage-category" class="screen">
-      <div class="header-nav">
-        <button class="back-btn" onclick="goToScreen('screen-home')">←</button>
-        <span class="page-title">어떤 기기인가요?</span>
-      </div>
-      <div class="list-container" id="list-category"></div>
+      <div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-home')">←</button><span class="page-title">어떤 기기인가요?</span></div><div class="list-container" id="list-category"></div>
     </div>
     <div id="screen-usage-brand" class="screen">
-      <div class="header-nav">
-        <button class="back-btn" onclick="goToScreen('screen-usage-category')">←</button>
-        <span class="page-title">기능 분류 선택</span>
-      </div>
-      <div class="list-container" id="list-brand"></div>
+      <div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-usage-category')">←</button><span class="page-title">기능 분류 선택</span></div><div class="list-container" id="list-brand"></div>
     </div>
     <div id="screen-usage-model" class="screen">
-      <div class="header-nav">
-        <button class="back-btn" onclick="goToScreen('screen-usage-brand')">←</button>
-        <span class="page-title">세부 기능 선택</span>
-      </div>
-      <div class="list-container" id="list-model"></div>
+      <div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-usage-brand')">←</button><span class="page-title">세부 기능 선택</span></div><div class="list-container" id="list-model"></div>
     </div>
     <div id="screen-usage-guide" class="screen">
-      <div class="header-nav">
-        <button class="back-btn" onclick="goToScreen('screen-usage-model')">←</button>
-        <span class="page-title">사용 방법 안내</span>
-      </div>
-      <div class="list-container" id="guide-content" style="padding-bottom:20px;"></div>
-      <button class="home-btn secondary" style="flex:0; margin-top:10px; padding:15px; justify-content:center;" onclick="goToScreen('screen-home')">
-        <span style="font-weight:bold;">처음으로 돌아가기</span>
-      </button>
+      <div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-usage-model')">←</button><span class="page-title">사용 방법 안내</span></div><div class="list-container" id="guide-content" style="padding-bottom:20px;"></div><button class="home-btn secondary" style="flex:0; margin-top:10px; padding:15px; justify-content:center;" onclick="goToScreen('screen-home')"><span style="font-weight:bold;">처음으로 돌아가기</span></button>
     </div>
 
     <div id="screen-find" class="screen">
-      <div class="header-nav">
-        <button class="back-btn" onclick="goToScreen('screen-home')">←</button>
-        <span class="page-title">기기 추천 받기</span>
-      </div>
-      <div class="chat-area" id="chat-box"></div>
-      <div class="chat-input-area">
-        <button class="mic-btn idle" id="mic-btn" onclick="toggleMic()">🎤</button>
-        <input type="text" class="chat-input" id="chat-input" placeholder="직접 입력하거나 말하기..." />
-        <button class="send-btn" onclick="sendMessage()">전송</button>
-      </div>
+      <div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-home')">←</button><span class="page-title">기기 추천 받기</span></div><div class="chat-area" id="chat-box"></div><div class="chat-input-area"><button class="mic-btn idle" id="mic-btn" onclick="toggleMic()">🎤</button><input type="text" class="chat-input" id="chat-input" placeholder="직접 입력하거나 말하기..." /><button class="send-btn" onclick="sendMessage()">전송</button></div>
     </div>
 
-    <div id="screen-faq" class="screen">
-      <div class="header-nav">
-        <button class="back-btn" onclick="goToScreen('screen-home')">←</button>
-        <span class="page-title">자주 묻는 질문</span>
-      </div>
-      <div class="list-container" id="list-faq"></div>
-    </div>
-
-    <div id="screen-popular" class="screen">
-      <div class="header-nav">
-        <button class="back-btn" onclick="goToScreen('screen-home')">←</button>
-        <span class="page-title">많이 확인한 기능</span>
-      </div>
-      <div class="list-container" id="list-popular"></div>
-    </div>
+    <div id="screen-faq" class="screen"><div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-home')">←</button><span class="page-title">자주 묻는 질문</span></div><div class="list-container" id="list-faq"></div></div>
+    <div id="screen-popular" class="screen"><div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-home')">←</button><span class="page-title">많이 확인한 기능</span></div><div class="list-container" id="list-popular"></div></div>
 
     <div id="screen-emergency" class="screen">
-      <div class="video-call-ui">
-        <div class="camera-feed" id="camera-feed">[ 손주 얼굴 화면 ]<br/>연결되었습니다.</div>
-        <div class="video-avatar" id="video-avatar">🧑‍💻</div>
-        <div class="call-status" id="call-status">연결 중...</div>
+      <div class="call-ui">
+        <div class="camera-feed" id="camera-feed">[ 봉사자(손주) 얼굴 ]<br/>연결되었습니다.</div>
+        <div class="call-avatar" id="video-avatar">🧑‍💻</div>
+        <div class="call-status" id="call-status">봉사자 찾는 중...</div>
         <div class="call-timer" id="call-timer">00:00</div>
-        <button class="hangup-btn" onclick="endCall()">📞</button>
+        <button class="hangup-btn" onclick="endCallAndFeedback()">📞</button>
       </div>
     </div>
     
-    <div id="screen-audio-call" class="screen">
-      <div class="video-call-ui">
-        <div class="video-avatar" style="border-color:#22c55e;">👵</div>
-        <div class="call-status">조부모님 (연결됨)</div>
-        <div class="call-timer" id="audio-call-timer">00:00</div>
-        <div style="margin-bottom:30px; color:#9ca3af; font-size:14px;">음성 통화 중입니다</div>
-        <button class="hangup-btn" onclick="endCall()">📞</button>
+    <div id="screen-feedback" class="screen center-layout">
+      <div class="feedback-ui">
+        <div style="font-size:20px; font-weight:700;">문제는 해결되셨나요?</div>
+        <div style="color:#cbd5f5; font-size:15px; line-height:1.4;">
+          방금 도와드린 '김손주' 학생이<br/>친절했는지 평가해주세요.
+        </div>
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <button class="feedback-btn" onclick="finishFeedback()">평가 완료</button>
       </div>
     </div>
 
     <div id="screen-grandchild-home" class="screen">
       <div class="header-nav">
         <button class="back-btn" onclick="goToScreen('screen-role')">◀</button>
-        <span class="page-title">손주 모드 (보호자)</span>
+        <span class="page-title">손주 모드 (봉사자)</span>
       </div>
       <div class="gc-dashboard">
         <div class="gc-card" style="border-color:#22c55e;">
-          <div class="gc-card-title"><span>현재 상태</span><span style="color:#22c55e;">● 온라인</span></div>
-          <div style="font-size:14px; color:#cbd5f5;">할머니께서 <strong>DigitalBridge</strong> 앱을 사용 중이십니다.<br/>(마지막 접속: 방금 전)</div>
-        </div>
-        <div class="gc-card">
-          <div class="gc-card-title">최근 활동 내역</div>
-          <div id="gc-log-list">
-            <div class="log-item"><span class="log-time">10:45</span><span>'스마트폰 > 카카오톡' 사용법 확인</span></div>
-            <div class="log-item"><span class="log-time">10:42</span><span>'자주 묻는 질문' 메뉴 진입</span></div>
+          <div class="gc-card-title"><span>매칭된 어르신</span><span style="color:#22c55e;">● 접속 중</span></div>
+          <div style="font-size:16px; font-weight:700; color:#fff; margin-bottom:4px;">박옥자 할머니 (78세)</div>
+          <div style="font-size:13px; color:#cbd5f5;">
+            "밥솥 기능이 궁금하다"고 하십니다.<br/>자주 확인해주세요.
           </div>
         </div>
-        <button class="home-btn" style="flex:0; margin-top:auto; background:#334155; justify-content:center;" onclick="startAudioCall()">
-          <span style="font-weight:bold;">조부모님께 전화 걸기</span>
+
+        <div class="gc-card">
+          <div class="gc-card-title">
+            <span>내 활동 및 이벤트</span>
+            <span style="font-size:12px; background:#2563eb; padding:2px 8px; border-radius:99px;">Lv. 3</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:4px;">
+            <div style="text-align:center;">
+              <div style="font-size:12px; color:#9ca3af;">이번 달 활동</div>
+              <div style="font-size:18px; font-weight:700; color:#fff;">5회</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:12px; color:#9ca3af;">내 평점</div>
+              <div style="font-size:18px; font-weight:700; color:#fbbf24;">4.9</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:12px; color:#9ca3af;">해결율</div>
+              <div style="font-size:18px; font-weight:700; color:#22c55e;">98%</div>
+            </div>
+          </div>
+          <div class="event-progress-bg">
+            <div class="event-progress-bar"></div>
+          </div>
+          <div class="event-text">
+            <span>☕ 스타벅스 쿠폰까지</span>
+            <span>3회 남음!</span>
+          </div>
+        </div>
+
+        <div class="gc-card">
+          <div class="gc-card-title">내 봉사 기록</div>
+          <div id="gc-log-list">
+            <div class="log-item">
+              <div class="log-header"><span>2024.11.20</span><span>완료</span></div>
+              <div class="log-content">박옥자 할머니의 '밥솥 취사' 문의를 해결해 드렸습니다.</div>
+            </div>
+            <div class="log-item">
+              <div class="log-header"><span>2024.11.18</span><span>완료</span></div>
+              <div class="log-content">김철수 할아버지와 15분간 말벗 봉사를 진행했습니다.</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="home-btn" style="flex:0; margin-top:auto; background:#0f766e; justify-content:center;" onclick="startGrandparentCall()">
+          <span style="font-weight:bold;">박옥자 할머니께 전화 걸기</span>
         </button>
       </div>
     </div>
 
-    <div id="screen-voice-nav" class="screen">
-      <div class="header-nav">
-        <button class="back-btn" onclick="goToScreen('screen-home')">✕</button>
-        <span class="page-title">검색 및 기능 찾기</span>
+    <div id="screen-audio-call" class="screen">
+      <div class="call-ui">
+        <div class="call-avatar">👵</div>
+        <div class="call-status" id="gp-call-status">연결 중...</div>
+        <div class="call-timer" id="gp-call-timer">00:00</div>
+        <div style="margin-bottom:30px; color:#9ca3af; font-size:14px;">음성 통화 중입니다</div>
+        <button class="hangup-btn" onclick="endCall()">📞</button>
       </div>
+    </div>
+
+    <div id="screen-voice-nav" class="screen">
+      <div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-home')">✕</button><span class="page-title">검색 및 기능 찾기</span></div>
       <div class="voice-nav-ui">
         <div class="voice-nav-icon" id="voice-nav-icon">🎤</div>
-        
-        <div>
-          <div class="voice-nav-text" id="voice-status-text">듣고 있습니다...</div>
-          <div class="voice-nav-sub" id="voice-sub-text">"카카오톡", "밥솥" 처럼<br/>궁금한 기기 이름을 말해보세요.</div>
-        </div>
-
-        <div class="chat-input-area" style="width:100%; margin-top:20px;">
-          <input type="text" class="chat-input" id="voice-search-input" placeholder="직접 입력하세요..." />
-          <button class="send-btn" onclick="handleGlobalSearch()">🔎</button>
-        </div>
+        <div><div class="voice-nav-text" id="voice-status-text">듣고 있습니다...</div><div class="voice-nav-sub" id="voice-sub-text">"카카오톡", "밥솥" 처럼<br/>궁금한 기기 이름을 말해보세요.</div></div>
+        <div class="chat-input-area" style="width:100%; margin-top:20px;"><input type="text" class="chat-input" id="voice-search-input" placeholder="직접 입력하세요..." /><button class="send-btn" onclick="handleGlobalSearch()">🔎</button></div>
       </div>
     </div>
 
@@ -452,309 +454,95 @@
     // --- [데이터 정의] ---
     const applianceData = {
       "smartphone": { 
-        name: "스마트폰 기초", icon: "📱", 
-        brands: ["기본 설정", "카카오톡", "유튜브"], 
-        models: ["글자 크기 조절", "벨소리 변경", "사진 전송", "영상 보기"],
-        guide: [
-          {text:"설정(톱니바퀴) 아이콘을 찾아 누르세요.", img:"⚙️"}, 
-          {text:"'디스플레이' 또는 '화면' 메뉴를 누르세요.", img:"🔆"}, 
-          {text:"'글자 크기와 스타일'을 눌러 조절하세요.", img:"🔠"}
-        ]
+        name: "스마트폰 기초", icon: "📱", brands: ["기본 설정", "카카오톡", "유튜브"], models: ["글자 크기 조절", "벨소리 변경", "사진 전송", "영상 보기"],
+        guide: [{text:"설정(톱니바퀴) 아이콘을 찾아 누르세요.", img:"⚙️"}, {text:"'디스플레이' 또는 '화면' 메뉴를 누르세요.", img:"🔆"}, {text:"'글자 크기와 스타일'을 눌러 조절하세요.", img:"🔠"}]
       },
-      "kiosk": {
-        name: "키오스크 (무인주문)", icon: "🍔",
-        brands: ["카페", "햄버거 가게", "식당"],
-        models: ["매장에서 먹기", "포장하기"],
-        guide: [
-          {text:"화면을 한 번 터치하세요.", img:"👆"},
-          {text:"'매장에서 식사' 또는 '포장하기'를 고르세요.", img:"🥡"},
-          {text:"원하는 메뉴 그림을 누르고 '결제하기'를 누르세요.", img:"💳"}
-        ]
-      },
-      "ricecooker": {
-        name: "전기 밥솥", icon: "🍚",
-        brands: ["쿠쿠 (CUCKOO)", "쿠첸 (CUCHEN)"],
-        models: ["백미 취사", "잡곡 취사", "보온 취소"],
-        guide: [
-          {text:"쌀을 씻어 내솥에 넣고 뚜껑을 잠그세요.", img:"🔒"},
-          {text:"'백미' 또는 '잡곡' 버튼을 누르세요.", img:"🔘"},
-          {text:"빨간색 '취사' 버튼을 꾹 누르세요.", img:"🔥"}
-        ]
-      },
-      "airfryer": {
-        name: "에어프라이어", icon: "🍤",
-        brands: ["필립스", "노브랜드", "기타"],
-        models: ["감자튀김", "치킨 데우기", "군고구마"],
-        guide: [
-          {text:"바구니에 음식을 겹치지 않게 넣으세요.", img:"🧺"},
-          {text:"온도 다이얼을 180도로 맞추세요.", img:"🌡️"},
-          {text:"시간 다이얼을 돌려 10~15분에 맞추세요.", img:"⏰"}
-        ]
-      },
-      // 기존 기기
-      "microwave": { name: "전자레인지", icon: "🍱", brands: ["삼성전자", "LG전자"], models: ["버튼식", "다이얼식"], guide: [{text:"문을 열고 음식을 넣으세요.", img:"🚪"}, {text:"조리 시작 버튼을 누르세요.", img:"▶️"}] },
-      "washing": { name: "세탁기", icon: "👕", brands: ["삼성전자", "LG전자"], models: ["표준 세탁", "이불 빨래"], guide: [{text:"빨래와 세제를 넣으세요.", img:"🧺"}, {text:"전원을 켜고 동작 버튼을 누르세요.", img:"▶️"}] },
-      "tv": { name: "TV", icon: "📺", brands: ["삼성전자", "LG전자"], models: ["전원 켜기", "채널 변경", "외부입력"], guide: [{text:"빨간 전원 버튼을 누르세요.", img:"🔴"}, {text:"외부입력 버튼을 눌러 TV로 맞추세요.", img:"📺"}] },
-      "ac": { name: "에어컨", icon: "❄️", brands: ["삼성전자", "LG전자"], models: ["스탠드형", "벽걸이형"], guide: [{text:"리모컨 전원을 누르세요.", img:"📱"}, {text:"온도를 낮추세요.", img:"🌡️"}] }
+      "kiosk": { name: "키오스크 (무인주문)", icon: "🍔", brands: ["카페", "햄버거 가게", "식당"], models: ["매장에서 먹기", "포장하기"], guide: [{text:"화면을 한 번 터치하세요.", img:"👆"}, {text:"'매장에서 식사' 또는 '포장하기'를 고르세요.", img:"🥡"}] },
+      "ricecooker": { name: "전기 밥솥", icon: "🍚", brands: ["쿠쿠", "쿠첸"], models: ["백미 취사", "잡곡 취사"], guide: [{text:"쌀을 씻어 내솥에 넣고 뚜껑을 잠그세요.", img:"🔒"}, {text:"'취사' 버튼을 꾹 누르세요.", img:"🔥"}] },
+      "airfryer": { name: "에어프라이어", icon: "🍤", brands: ["필립스", "노브랜드"], models: ["감자튀김", "치킨 데우기"], guide: [{text:"음식을 겹치지 않게 넣으세요.", img:"🧺"}, {text:"온도 180도, 시간 10분에 맞추세요.", img:"⏰"}] },
+      "microwave": { name: "전자레인지", icon: "🍱", brands: ["삼성전자", "LG전자"], models: ["버튼식", "다이얼식"], guide: [{text:"음식을 넣으세요.", img:"🚪"}, {text:"시작 버튼을 누르세요.", img:"▶️"}] },
+      "washing": { name: "세탁기", icon: "👕", brands: ["삼성전자", "LG전자"], models: ["표준 세탁", "이불 빨래"], guide: [{text:"빨래와 세제를 넣으세요.", img:"🧺"}, {text:"동작 버튼을 누르세요.", img:"▶️"}] },
+      "tv": { name: "TV", icon: "📺", brands: ["삼성전자", "LG전자"], models: ["전원 켜기", "외부입력"], guide: [{text:"빨간 전원 버튼을 누르세요.", img:"🔴"}, {text:"외부입력 버튼을 누르세요.", img:"📺"}] },
+      "ac": { name: "에어컨", icon: "❄️", brands: ["삼성전자", "LG전자"], models: ["스탠드형"], guide: [{text:"전원을 누르세요.", img:"📱"}, {text:"온도를 낮추세요.", img:"🌡️"}] }
     };
+    const faqData = [{ q: "글자 크기가 작아요", a: "스마트폰 기초 > 기본 설정 확인하세요." }, { q: "와이파이 안 돼요", a: "상단바의 파란색 아이콘을 확인하세요." }];
+    const popularData = [{ title: "TV 외부입력 바꾸기", desc: "화면이 안 나올 때" }, { title: "카카오톡 사진 보내기", desc: "손주에게 사진 전송" }];
+    let currentCategory, currentBrand, currentModel, isRecording = false, callTimerIntv;
 
-    const faqData = [
-      { q: "글자 크기가 너무 작아요", a: "스마트폰 기초 > 기본 설정 > 글자 크기 메뉴를 확인하세요." },
-      { q: "와이파이가 안 돼요", a: "상단바를 내려 와이파이 아이콘이 파란색인지 확인하세요." },
-      { q: "소리가 안 들려요", a: "옆면의 볼륨 버튼을 위쪽으로 눌러보세요." }
-    ];
-
-    const popularData = [
-      { title: "TV 외부입력 바꾸기", desc: "화면이 안 나올 때 해결법" },
-      { title: "카카오톡 사진 보내기", desc: "손주에게 사진 보내는 법" },
-      { title: "보일러 온수 전용", desc: "여름철 가스비 절약" }
-    ];
-
-    let currentCategory, currentBrand, currentModel, isRecording = false;
-    let callTimerIntv;
-
-    // --- [공통 함수] ---
+    // --- [공통] ---
     function goToScreen(screenId) {
       document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
       const target = document.getElementById(screenId);
       if (target) target.classList.add('active');
     }
-
     window.addEventListener('load', () => {
       setTimeout(() => goToScreen('screen-role'), 2500);
-      const obs = new MutationObserver((mutations) => {
-        mutations.forEach((m) => {
-          if (m.target.id === 'screen-loading2' && m.target.classList.contains('active')) {
-            setTimeout(() => goToScreen('screen-home'), 2000);
-          }
-        });
-      });
-      obs.observe(document.getElementById('screen-loading2'), { attributes: true });
+      new MutationObserver((m) => { m.forEach((x) => { if(x.target.id==='screen-loading2' && x.target.classList.contains('active')) setTimeout(()=>goToScreen('screen-home'),2000); })}).observe(document.getElementById('screen-loading2'), {attributes:true});
     });
 
-    // --- [사용법 로직] ---
-    function startUsageFlow() {
-      const list = document.getElementById('list-category');
-      list.innerHTML = ''; 
-      Object.keys(applianceData).forEach(key => {
-        const item = applianceData[key];
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `<span class="list-text">${item.name}</span><span style="font-size:24px;">${item.icon}</span>`;
-        div.onclick = () => { currentCategory = key; showBrandList(); };
-        list.appendChild(div);
-      });
-      goToScreen('screen-usage-category');
-    }
-    function showBrandList() {
-      const list = document.getElementById('list-brand');
-      list.innerHTML = '';
-      applianceData[currentCategory].brands.forEach(brand => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `<span class="list-text">${brand}</span><span style="font-size:24px;">📁</span>`;
-        div.onclick = () => { currentBrand = brand; showModelList(); };
-        list.appendChild(div);
-      });
-      goToScreen('screen-usage-brand');
-    }
-    function showModelList() {
-      const list = document.getElementById('list-model');
-      list.innerHTML = '';
-      applianceData[currentCategory].models.forEach(model => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `<span class="list-text">${model}</span><span style="font-size:24px;">⚙️</span>`;
-        div.onclick = () => { currentModel = model; showGuide(); };
-        list.appendChild(div);
-      });
-      goToScreen('screen-usage-model');
-    }
-    function showGuide() {
-      const content = document.getElementById('guide-content');
-      content.innerHTML = '';
-      const titleDiv = document.createElement('div');
-      titleDiv.style.marginBottom = "10px";
-      titleDiv.style.color = "#38bdf8";
-      titleDiv.innerHTML = `${applianceData[currentCategory].name} > ${currentModel}`;
-      content.appendChild(titleDiv);
+    // --- [사용법] ---
+    function startUsageFlow() { const l=document.getElementById('list-category'); l.innerHTML=''; Object.keys(applianceData).forEach(k=>{ const i=applianceData[k]; l.innerHTML+=`<div class="list-item" onclick="currentCategory='${k}';showBrandList()"><span class="list-text">${i.name}</span><span style="font-size:24px;">${i.icon}</span></div>`; }); goToScreen('screen-usage-category'); }
+    function showBrandList() { const l=document.getElementById('list-brand'); l.innerHTML=''; applianceData[currentCategory].brands.forEach(b=>{ l.innerHTML+=`<div class="list-item" onclick="currentBrand='${b}';showModelList()"><span class="list-text">${b}</span><span style="font-size:24px;">📁</span></div>`; }); goToScreen('screen-usage-brand'); }
+    function showModelList() { const l=document.getElementById('list-model'); l.innerHTML=''; applianceData[currentCategory].models.forEach(m=>{ l.innerHTML+=`<div class="list-item" onclick="currentModel='${m}';showGuide()"><span class="list-text">${m}</span><span style="font-size:24px;">⚙️</span></div>`; }); goToScreen('screen-usage-model'); }
+    function showGuide() { const c=document.getElementById('guide-content'); c.innerHTML=`<div style="margin-bottom:10px; color:#38bdf8;">${applianceData[currentCategory].name} > ${currentModel}</div>`; applianceData[currentCategory].guide.forEach((s,i)=>{ c.innerHTML+=`<div class="guide-step"><div class="step-num">STEP ${i+1}</div><div class="step-content">${s.text}</div><div class="step-img-box">${s.img}</div></div>`; }); goToScreen('screen-usage-guide'); }
 
-      applianceData[currentCategory].guide.forEach((step, index) => {
-        const div = document.createElement('div');
-        div.className = 'guide-step';
-        div.innerHTML = `<div class="step-num">STEP ${index + 1}</div><div class="step-content">${step.text}</div><div class="step-img-box">${step.img}</div>`;
-        content.appendChild(div);
-      });
-      goToScreen('screen-usage-guide');
-    }
+    // --- [기기 찾기] ---
+    function startFindFlow() { document.getElementById('chat-box').innerHTML=`<div class="message msg-ai">어떤 점이 불편하신가요?</div>`; document.getElementById('chat-input').value=""; goToScreen('screen-find'); }
+    function toggleMic() { const b=document.getElementById('mic-btn'), i=document.getElementById('chat-input'); if(!isRecording){ isRecording=true; b.classList.remove('idle'); b.innerHTML="⏹"; i.placeholder="듣는 중..."; setTimeout(()=>{ if(isRecording){ i.value="청소가 힘들어"; toggleMic(); sendMessage(); } },2500); } else { isRecording=false; b.classList.add('idle'); b.innerHTML="🎤"; i.placeholder="입력 또는 말하기..."; } }
+    function sendMessage() { const i=document.getElementById('chat-input'), t=i.value.trim(), c=document.getElementById('chat-box'); if(!t)return; c.innerHTML+=`<div class="message msg-user">${t}</div>`; i.value=""; c.scrollTop=c.scrollHeight; setTimeout(()=>{ let r="이해하지 못했어요.", rec=null; if(t.includes("청소")){r="로봇 청소기를 추천해요."; rec={t:"효도 로봇 청소기",d:"물걸레 겸용"};} else if(t.includes("건조")){r="가습기를 추천해요."; rec={t:"대용량 가습기",d:"세척 간편"};} c.innerHTML+=`<div class="message msg-ai">${r}</div>`; if(rec)c.innerHTML+=`<div class="result-card"><div class="result-title">추천: ${rec.t}</div><div class="result-desc">${rec.d}</div><button class="buy-btn">판매점 보기</button></div>`; c.scrollTop=c.scrollHeight; },800); }
 
-    // --- [기기 찾기 채팅] ---
-    function startFindFlow() {
-      const chatBox = document.getElementById('chat-box');
-      chatBox.innerHTML = `<div class="message msg-ai">안녕하세요! 어르신.<br/>어떤 점이 불편하신가요?<br/>(예: "청소가 힘들어요", "건조해요")</div>`;
-      document.getElementById('chat-input').value = "";
-      goToScreen('screen-find');
-    }
-    function toggleMic() {
-      const btn = document.getElementById('mic-btn');
-      const input = document.getElementById('chat-input');
-      if (!isRecording) {
-        isRecording = true;
-        btn.classList.remove('idle'); btn.innerHTML = "⏹";
-        input.placeholder = "듣고 있습니다...";
-        setTimeout(() => { if(isRecording) { input.value = "청소가 힘들어서 기계가 대신 해줬으면 좋겠어"; toggleMic(); sendMessage(); } }, 2500);
-      } else {
-        isRecording = false; btn.classList.add('idle'); btn.innerHTML = "🎤"; input.placeholder = "직접 입력하거나 말하기...";
-      }
-    }
-    function sendMessage() {
-      const input = document.getElementById('chat-input');
-      const text = input.value.trim();
-      if (!text) return;
-      const chatBox = document.getElementById('chat-box');
-      chatBox.innerHTML += `<div class="message msg-user">${text}</div>`;
-      input.value = ""; chatBox.scrollTop = chatBox.scrollHeight;
-      setTimeout(() => {
-        let reply = "죄송해요, 잘 이해하지 못했어요.";
-        let rec = null;
-        if (text.includes("청소") || text.includes("힘들")) { reply = "청소 때문에 힘드셨군요. '로봇 청소기'가 알아서 다 해줍니다."; rec = {t:"효도 로봇 청소기", d:"버튼 하나로 물걸레까지!"}; }
-        else if (text.includes("건조")) { reply = "'가열식 가습기'를 추천해요. 따뜻하고 촉촉합니다."; rec = {t:"대용량 가습기", d:"물 보충이 쉬워요."}; }
-        chatBox.innerHTML += `<div class="message msg-ai">${reply}</div>`;
-        if (rec) chatBox.innerHTML += `<div class="result-card"><div class="result-title">추천: ${rec.t}</div><div class="result-desc">${rec.d}</div><button class="buy-btn">판매점 보기</button></div>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }, 800);
-    }
+    // --- [음성/검색] ---
+    function startGlobalVoice() { goToScreen('screen-voice-nav'); document.getElementById('voice-status-text').innerText="듣고 있습니다..."; document.getElementById('voice-search-input').value=""; setTimeout(()=>{ document.getElementById('voice-status-text').innerText="말씀해주세요."; document.getElementById('voice-search-input').placeholder="듣기 대기 중..."; },2500); }
+    function handleGlobalSearch() { const inp=document.getElementById('voice-search-input').value.trim(); if(!inp)return; let fk=null; Object.keys(applianceData).forEach(k=>{ const d=applianceData[k]; if(d.name.includes(inp)||d.brands.some(b=>b.includes(inp))||d.models.some(m=>m.includes(inp))||(inp.includes("카톡")&&k==="smartphone")||(inp.includes("밥")&&k==="ricecooker")) fk=k; }); if(fk){ alert(`'${inp}' 관련 메뉴로 이동합니다.`); currentCategory=fk; showBrandList(); } else { alert("결과를 찾지 못했습니다."); } }
 
-    // --- [NEW] 음성/검색 내비게이션 (자동 납치 X, 채팅 검색 O) ---
-    function startGlobalVoice() {
-      goToScreen('screen-voice-nav');
-      document.getElementById('voice-status-text').innerText = "듣고 있습니다...";
-      document.getElementById('voice-search-input').value = "";
-      
-      // 마이크 시뮬레이션: 2.5초 뒤에 인식된 것처럼 처리
-      setTimeout(() => {
-        document.getElementById('voice-status-text').innerText = "말씀해주세요.";
-        document.getElementById('voice-search-input').placeholder = "듣기 대기 중... (또는 입력하세요)";
-      }, 2500);
-    }
+    // --- [서브] ---
+    function startFaqFlow() { const l=document.getElementById('list-faq'); l.innerHTML=''; faqData.forEach(i=>{ l.innerHTML+=`<div class="list-item"><div style="display:flex; flex-direction:column; gap:6px;"><span class="list-text" style="font-size:16px;">Q. ${i.q}</span><span style="font-size:14px; color:#9ca3af;">A. ${i.a}</span></div></div>`; }); goToScreen('screen-faq'); }
+    function startPopularFlow() { const l=document.getElementById('list-popular'); l.innerHTML=''; popularData.forEach(i=>{ l.innerHTML+=`<div class="list-item"><div style="display:flex; flex-direction:column; gap:6px;"><span class="list-text" style="font-size:16px;">${i.title}</span><span style="font-size:14px; color:#9ca3af;">${i.desc}</span></div></div>`; }); goToScreen('screen-popular'); }
 
-    // [검색 로직] 사용자가 입력한 단어로 기기를 찾아 이동
-    function handleGlobalSearch() {
-      const input = document.getElementById('voice-search-input').value.trim();
-      if (!input) return;
-      
-      // 검색 로직 (키워드 매칭)
-      let foundKey = null;
-      let targetName = "";
-
-      // applianceData를 순회하며 키워드 찾기
-      const keys = Object.keys(applianceData);
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        const data = applianceData[key];
-        
-        // 기기 이름, 브랜드, 모델명, 가이드 내용에서 검색
-        if (data.name.includes(input) || 
-            data.brands.some(b => b.includes(input)) || 
-            data.models.some(m => m.includes(input))) {
-          foundKey = key;
-          targetName = data.name;
-          break;
-        }
-        
-        // 예외 처리: "카톡", "카카오" -> 스마트폰으로 연결
-        if ((input.includes("카톡") || input.includes("카카오")) && key === "smartphone") {
-          foundKey = key;
-          targetName = data.name;
-          break;
-        }
-        // 예외 처리: "밥" -> 밥솥
-        if (input.includes("밥") && key === "ricecooker") {
-           foundKey = key;
-           targetName = data.name;
-           break;
-        }
-      }
-
-      if (foundKey) {
-        alert(`'${input}'(으)로 검색된 [${targetName}] 메뉴로 이동합니다.`);
-        currentCategory = foundKey;
-        showBrandList(); // 해당 기기의 브랜드 선택 화면으로 이동
-      } else {
-        alert(`'${input}'에 대한 정보를 찾지 못했습니다.\n"밥솥", "카카오톡" 처럼 단어로 입력해보세요.`);
-      }
+    // --- [조부모 -> 손주 긴급 호출] ---
+    function startEmergencyCall() { 
+      goToScreen('screen-emergency'); 
+      document.getElementById('call-status').innerText="봉사자 찾는 중..."; 
+      document.getElementById('call-timer').innerText="00:00"; 
+      document.getElementById('camera-feed').classList.remove('connected'); 
+      document.getElementById('video-avatar').style.display="flex"; 
+      setTimeout(()=>{ 
+        document.getElementById('call-status').innerText="김손주 학생 (연결됨)"; 
+        document.getElementById('camera-feed').classList.add('connected'); 
+        document.getElementById('video-avatar').style.display="none"; 
+        let s=0; clearInterval(callTimerIntv); 
+        callTimerIntv=setInterval(()=>{ s++; let m=Math.floor(s/60), sec=s%60; document.getElementById('call-timer').innerText=`${m<10?'0'+m:m}:${sec<10?'0'+sec:sec}`; },1000); 
+      },2000); 
     }
+    function endCallAndFeedback() { clearInterval(callTimerIntv); goToScreen('screen-feedback'); }
+    function finishFeedback() { alert("평가가 제출되었습니다. 감사합니다!"); goToScreen('screen-home'); }
 
-    // --- [기타 서브 기능] ---
-    function startFaqFlow() {
-      const list = document.getElementById('list-faq');
-      list.innerHTML = '';
-      faqData.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `<div style="display:flex; flex-direction:column; gap:6px;"><span class="list-text" style="font-size:16px;">Q. ${item.q}</span><span style="font-size:14px; color:#9ca3af;">A. ${item.a}</span></div>`;
-        list.appendChild(div);
-      });
-      goToScreen('screen-faq');
-    }
-    function startPopularFlow() {
-      const list = document.getElementById('list-popular');
-      list.innerHTML = '';
-      popularData.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `<div style="display:flex; flex-direction:column; gap:6px;"><span class="list-text" style="font-size:16px;">${item.title}</span><span style="font-size:14px; color:#9ca3af;">${item.desc}</span></div>`;
-        list.appendChild(div);
-      });
-      goToScreen('screen-popular');
-    }
-    function startEmergencyCall() {
-      goToScreen('screen-emergency');
-      const status = document.getElementById('call-status');
-      const timer = document.getElementById('call-timer');
-      const feed = document.getElementById('camera-feed');
-      const avatar = document.getElementById('video-avatar');
-      status.innerText = "손주에게 연결 중...";
+    // --- [NEW: 손주 -> 할머니 음성 전화] ---
+    function startGrandparentCall() {
+      goToScreen('screen-audio-call');
+      const status = document.getElementById('gp-call-status');
+      const timer = document.getElementById('gp-call-timer');
+      status.innerText = "연결 중...";
       timer.innerText = "00:00";
-      feed.classList.remove('connected');
-      avatar.style.display = "flex";
+      
+      // 2초 후 연결 시뮬레이션
       setTimeout(() => {
-        status.innerText = "손주 (연결됨)";
-        feed.classList.add('connected');
-        avatar.style.display = "none";
-        let sec = 0;
+        status.innerText = "박옥자 할머니 (연결됨)";
+        let s = 0;
         clearInterval(callTimerIntv);
         callTimerIntv = setInterval(() => {
-          sec++;
-          let min = Math.floor(sec / 60);
-          let s = sec % 60;
-          timer.innerText = `${min < 10 ? '0'+min : min}:${s < 10 ? '0'+s : s}`;
+          s++;
+          let m = Math.floor(s/60);
+          let sec = s%60;
+          timer.innerText = `${m<10?'0'+m:m}:${sec<10?'0'+sec:sec}`;
         }, 1000);
       }, 2000);
     }
     
-    // [수정] 손주 모드 - 일반 음성 통화 시작
-    function startAudioCall() {
-      goToScreen('screen-audio-call');
-      const timer = document.getElementById('audio-call-timer');
-      timer.innerText = "00:00";
-      let sec = 0;
-      clearInterval(callTimerIntv);
-      callTimerIntv = setInterval(() => {
-        sec++;
-        let min = Math.floor(sec / 60);
-        let s = sec % 60;
-        timer.innerText = `${min < 10 ? '0'+min : min}:${s < 10 ? '0'+s : s}`;
-      }, 1000);
-    }
-
     function endCall() {
       clearInterval(callTimerIntv);
       alert("통화가 종료되었습니다.");
-      // 어디서 왔느냐에 따라 돌아가는 곳이 다름 (간단히 홈 or 손주홈)
-      // 여기서는 그냥 홈화면(조부모) or 손주홈으로 가야하는데, 
-      // 화면 상태를 추적하지 않았으므로 안전하게 '역할 선택'으로 보냄 or 메인홈
-      goToScreen('screen-role'); 
+      goToScreen('screen-grandchild-home');
     }
   </script>
 </body>
