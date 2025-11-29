@@ -354,9 +354,9 @@
 
     <div id="screen-emergency" class="screen">
       <div class="call-ui">
-        <div class="camera-feed" id="camera-feed">[ 봉사자 얼굴 ]<br/>연결되었습니다.</div>
+        <div class="camera-feed" id="camera-feed">[ 김손주님 얼굴 ]<br/>연결되었습니다.</div>
         <div class="call-avatar" id="video-avatar">🧑‍💻</div>
-        <div class="call-status" id="call-status">봉사자 찾는 중...</div>
+        <div class="call-status" id="call-status">손주님 찾는 중...</div>
         <div class="call-timer" id="call-timer">00:00</div>
         <button class="hangup-btn" onclick="endCallAndFeedback()">📞</button>
       </div>
@@ -366,7 +366,7 @@
       <div class="feedback-ui">
         <div style="font-size:20px; font-weight:700;">문제는 해결되셨나요?</div>
         <div style="color:#cbd5f5; font-size:15px; line-height:1.4;">
-          방금 도와드린 봉사자 학생이<br/>친절했는지 평가해주세요.
+          방금 도와드린 손주님이<br/>친절했는지 평가해주세요.
         </div>
         <div class="stars">⭐⭐⭐⭐⭐</div>
         <button class="feedback-btn" onclick="finishFeedback()">평가 완료</button>
@@ -376,7 +376,7 @@
     <div id="screen-grandchild-home" class="screen">
       <div class="header-nav">
         <button class="back-btn" onclick="goToScreen('screen-role')">◀</button>
-        <span class="page-title">손주 모드 (봉사자)</span>
+        <span class="page-title">손주 모드</span>
       </div>
       <div class="gc-dashboard">
         
@@ -384,12 +384,12 @@
           
           <div id="gc-match-start">
             <div style="font-size:40px; margin-bottom:10px;">🤝</div>
-            <div style="font-size:16px; font-weight:bold; margin-bottom:6px;">봉사 대기 시작하기</div>
+            <div style="font-size:16px; font-weight:bold; margin-bottom:6px;">매칭 시작하기</div>
             <div style="font-size:13px; color:#9ca3af; margin-bottom:16px;">
               버튼을 누르면 도움이 필요한<br/>어르신과 연결을 기다립니다.
             </div>
             <button class="home-btn" style="background:#2563eb; justify-content:center; text-align:center; padding:12px;" onclick="toggleMatching(true)">
-              <span style="font-weight:bold;">봉사 대기 시작 (ON)</span>
+              <span style="font-weight:bold;">매칭 시작 (ON)</span>
             </button>
           </div>
 
@@ -402,7 +402,7 @@
               도움이 필요한 어르신이 생기면<br/>알림이 울립니다.
             </div>
             <button class="home-btn" style="background:#ef4444; margin-top:16px; padding:10px; min-height:40px; justify-content:center;" onclick="toggleMatching(false)">
-              <span style="font-size:14px; font-weight:bold;">대기 종료 (OFF)</span>
+              <span style="font-size:14px; font-weight:bold;">매칭 종료 (OFF)</span>
             </button>
           </div>
 
