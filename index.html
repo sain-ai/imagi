@@ -96,6 +96,72 @@
       to { stroke-dashoffset: 0; }
     }
 
+    /* =========== 역할 선택 화면 =========== */
+    #roleSelect {
+      background: linear-gradient(180deg, #020617 0, #020617 60%, #020617 100%);
+      display: none;
+    }
+    #roleSelect.visible { display: flex; }
+
+    .role-wrapper {
+      width: 100%;
+      padding: 24px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .role-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .role-desc {
+      font-size: 12px;
+      color: #9ca3af;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .role-boxes {
+      margin-top: 4px;
+      width: 100%;
+      display: flex;
+      gap: 10px;
+    }
+
+    .role-card {
+      flex: 1;
+      border-radius: 16px;
+      padding: 16px 10px;
+      background: linear-gradient(135deg, #0b1120 0, #111827 100%);
+      border: 1px solid rgba(148,163,184,0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .role-card.active {
+      background: linear-gradient(135deg, #1d4ed8 0, #38bdf8 100%);
+      border-color: #60a5fa;
+    }
+
+    .role-main {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .role-sub {
+      font-size: 11px;
+      color: #e5e7eb;
+      opacity: 0.9;
+    }
+
     /* =========== 메인 홈 화면 =========== */
     #main {
       background: linear-gradient(180deg, #0f172a 0, #020617 42%, #020617 100%);
@@ -234,7 +300,7 @@
 
     /* 음성 입력 버튼 */
     .voice-area {
-      margin-top: 290px;
+      margin-top: 290px; /* 네가 잡아둔 위치 그대로 */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -305,6 +371,29 @@
           <circle class="loader-progress" cx="40" cy="40" r="30" />
         </svg>
         <span>준비하는 중입니다…</span>
+      </div>
+    </div>
+
+    <!-- 역할 선택 화면 -->
+    <div id="roleSelect" class="screen">
+      <div class="role-wrapper">
+        <div class="role-title">누구로 이용하시나요?</div>
+        <div class="role-desc">
+          조부모님은 사용법 안내를,<br/>
+          손주는 도와주는 화면을 보게 됩니다.
+        </div>
+
+        <div class="role-boxes">
+          <div class="role-card" id="roleGrandchild">
+            <div class="role-main">손주 모드</div>
+            <div class="role-sub">조부모님을 도와주는 메뉴 (준비 중)</div>
+          </div>
+
+          <div class="role-card active" id="roleGrandparent">
+            <div class="role-main">조부모 모드</div>
+            <div class="role-sub">전자기기 사용법이 궁금하신 분</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -381,12 +470,28 @@
   </div>
 
   <script>
-    // 3초 후 스플래시 → 메인 화면 전환
+    // 3초 후 스플래시 → 역할 선택 화면 전환
     window.addEventListener("load", () => {
       setTimeout(() => {
         document.getElementById("splash").style.display = "none";
-        document.getElementById("main").classList.add("visible");
+        document.getElementById("roleSelect").classList.add("visible");
       }, 3000);
+    });
+
+    // 역할 선택: 손주/조부모
+    const roleGrandparent = document.getElementById("roleGrandparent");
+    const roleGrandchild = document.getElementById("roleGrandchild");
+    const roleSelect = document.getElementById("roleSelect");
+    const mainScreen = document.getElementById("main");
+
+    roleGrandparent.addEventListener("click", () => {
+      // 조부모 모드 선택 → 홈 화면으로
+      roleSelect.classList.remove("visible");
+      mainScreen.classList.add("visible");
+    });
+
+    roleGrandchild.addEventListener("click", () => {
+      alert("손주 모드는 준비 중입니다. 지금은 조부모 모드만 이용 가능합니다.");
     });
 
     // 이후 실제 기능 연결은 나중에 구현용 (현재는 안내만)
