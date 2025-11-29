@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>PROJECT – DigitalBridge (Azar Style)</title>
+  <title>PROJECT – DigitalBridge (Manual Match Ver.)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <style>
     /* --- [1. 기본 설정 & 프레임] --- */
@@ -164,7 +164,7 @@
     .result-desc { font-size: 14px; color: #cbd5f5; margin-bottom: 12px; }
     .buy-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px; }
 
-    /* 통화 UI (영상/음성 공통) */
+    /* 통화 UI */
     .call-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; width: 100%; }
     .call-avatar { width: 120px; height: 120px; background: #475569; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 50px; margin-bottom: 20px; border: 4px solid #38bdf8; animation: pulse 2s infinite; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(56, 189, 248, 0); } 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); } }
@@ -181,7 +181,7 @@
     .voice-nav-text { font-size: 22px; font-weight: 700; color: #fff; }
     .voice-nav-sub { font-size: 16px; color: #9ca3af; }
     
-    /* [손주 모드 대시보드 (Azar 스타일)] */
+    /* [손주 모드 대시보드] */
     .gc-dashboard { display: flex; flex-direction: column; gap: 16px; flex: 1; overflow-y:auto; padding-bottom:10px; }
     .gc-card { background: rgba(30,41,59,0.5); border-radius: 16px; padding: 20px; border: 1px solid rgba(75,85,99,0.4); }
     .gc-card-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #e5e7eb; display: flex; justify-content: space-between; align-items:center; }
@@ -318,10 +318,10 @@
           </div>
           <div class="info-card info-card-wide" style="border-color: rgba(239,68,68,0.5);" onclick="startEmergencyCall()">
             <div class="info-card-header">
-              <div class="info-card-title" style="color:#f87171;">긴급 도움 요청 (봉사자 연결)</div>
+              <div class="info-card-title" style="color:#f87171;">긴급 도움 요청 (손주와 연결)</div>
               <div>🚨</div>
             </div>
-            <div class="info-card-text">누르면 접속 중인 봉사자와 바로 연결됩니다.</div>
+            <div class="info-card-text">접속 중인 손자 역할과 바로 연결됩니다.</div>
           </div>
         </div>
 
@@ -380,14 +380,32 @@
       </div>
       <div class="gc-dashboard">
         
-        <div style="text-align:center; padding: 20px 0;">
-          <div class="radar-scanner">
-            <div style="font-size:40px;">📡</div>
+        <div id="gc-match-area" style="text-align:center; padding: 20px 0;">
+          
+          <div id="gc-match-start">
+            <div style="font-size:40px; margin-bottom:10px;">🤝</div>
+            <div style="font-size:16px; font-weight:bold; margin-bottom:6px;">봉사 대기 시작하기</div>
+            <div style="font-size:13px; color:#9ca3af; margin-bottom:16px;">
+              버튼을 누르면 도움이 필요한<br/>어르신과 연결을 기다립니다.
+            </div>
+            <button class="home-btn" style="background:#2563eb; justify-content:center; text-align:center; padding:12px;" onclick="toggleMatching(true)">
+              <span style="font-weight:bold;">봉사 대기 시작 (ON)</span>
+            </button>
           </div>
-          <div class="radar-status">매칭 대기 중...</div>
-          <div style="font-size:13px; color:#cbd5f5; margin-top:6px;">
-            도움이 필요한 어르신이 생기면<br/>알림이 울립니다.
+
+          <div id="gc-match-radar" style="display:none;">
+            <div class="radar-scanner">
+              <div style="font-size:40px;">📡</div>
+            </div>
+            <div class="radar-status">매칭 대기 중...</div>
+            <div style="font-size:13px; color:#cbd5f5; margin-top:6px;">
+              도움이 필요한 어르신이 생기면<br/>알림이 울립니다.
+            </div>
+            <button class="home-btn" style="background:#ef4444; margin-top:16px; padding:10px; min-height:40px; justify-content:center;" onclick="toggleMatching(false)">
+              <span style="font-size:14px; font-weight:bold;">대기 종료 (OFF)</span>
+            </button>
           </div>
+
         </div>
 
         <div class="gc-card">
@@ -494,7 +512,7 @@
     function startFaqFlow() { const l=document.getElementById('list-faq'); l.innerHTML=''; faqData.forEach(i=>{ l.innerHTML+=`<div class="list-item"><div style="display:flex; flex-direction:column; gap:6px;"><span class="list-text" style="font-size:16px;">Q. ${i.q}</span><span style="font-size:14px; color:#9ca3af;">A. ${i.a}</span></div></div>`; }); goToScreen('screen-faq'); }
     function startPopularFlow() { const l=document.getElementById('list-popular'); l.innerHTML=''; popularData.forEach(i=>{ l.innerHTML+=`<div class="list-item"><div style="display:flex; flex-direction:column; gap:6px;"><span class="list-text" style="font-size:16px;">${i.title}</span><span style="font-size:14px; color:#9ca3af;">${i.desc}</span></div></div>`; }); goToScreen('screen-popular'); }
 
-    // --- [긴급 도움 & 피드백 (Azar 매칭 시뮬레이션)] ---
+    // --- [긴급 도움 (Azar 매칭)] ---
     function startEmergencyCall() { 
       goToScreen('screen-emergency'); 
       document.getElementById('call-status').innerText="봉사자 찾는 중..."; 
@@ -502,7 +520,6 @@
       document.getElementById('camera-feed').classList.remove('connected'); 
       document.getElementById('video-avatar').style.display="flex"; 
       setTimeout(()=>{ 
-        // 매칭 성공 시뮬레이션
         document.getElementById('call-status').innerText="김손주 학생 (연결됨)"; 
         document.getElementById('camera-feed').classList.add('connected'); 
         document.getElementById('video-avatar').style.display="none"; 
@@ -512,6 +529,19 @@
     }
     function endCallAndFeedback() { clearInterval(callTimerIntv); goToScreen('screen-feedback'); }
     function finishFeedback() { alert("평가가 제출되었습니다. 감사합니다!"); goToScreen('screen-home'); }
+
+    // --- [손주 모드: 수동 매칭 토글] ---
+    function toggleMatching(isOn) {
+      const startDiv = document.getElementById('gc-match-start');
+      const radarDiv = document.getElementById('gc-match-radar');
+      if (isOn) {
+        startDiv.style.display = 'none';
+        radarDiv.style.display = 'block';
+      } else {
+        startDiv.style.display = 'block';
+        radarDiv.style.display = 'none';
+      }
+    }
   </script>
 </body>
 </html>
