@@ -16,6 +16,7 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
+    /* 휴대폰 프레임 */
     .phone {
       width: 100%;
       max-width: 420px;
@@ -38,7 +39,7 @@
       padding: 20px;
     }
 
-    /* 스플래시 */
+    /* =========== 스플래시 =========== */
     #splash {
       background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000 100%);
       text-align: center;
@@ -57,6 +58,11 @@
       margin-top: 4px;
       color: #38bdf8;
     }
+    .splash-sub {
+      font-size: 13px;
+      color: #cbd5f5;
+      margin-top: 6px;
+    }
 
     .loader-wrapper {
       margin-top: 18px;
@@ -67,14 +73,70 @@
       color: #9ca3af;
       font-size: 11px;
     }
+    .loader {
+      width: 72px;
+      height: 72px;
+      transform: rotate(-90deg);
+    }
+    .loader circle {
+      fill: none;
+      stroke-width: 4;
+      stroke-linecap: round;
+    }
+    .loader-bg {
+      stroke: rgba(148,163,184,0.35);
+    }
+    .loader-progress {
+      stroke: #38bdf8;
+      stroke-dasharray: 188.4;
+      stroke-dashoffset: 188.4;
+      animation: progressFill 3s ease-out forwards;
+    }
+    @keyframes progressFill {
+      to { stroke-dashoffset: 0; }
+    }
 
-    /* 메인 */
+    /* =========== 메인 홈 화면 =========== */
     #main {
       background: linear-gradient(180deg, #0f172a 0, #020617 42%, #020617 100%);
-      padding: 18px 18px 36px;
+      padding: 18px 18px 24px;
       display: none;
     }
     #main.visible { display: flex; }
+
+    /* 상단 앱바 */
+    .status-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #9ca3af;
+      opacity: 0.9;
+      margin-bottom: 6px;
+    }
+    .status-left {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .signal-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+    .status-right {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .status-icon {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 1px solid #9ca3af;
+    }
 
     .header {
       width: 100%;
@@ -84,10 +146,28 @@
       align-items: center;
       margin-bottom: 16px;
     }
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .app-name {
+      font-size: 19px;
+      font-weight: 700;
+    }
+    .app-sub {
+      font-size: 12px;
+      color: #a5b4fc;
+    }
+    .header-badge {
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      font-size: 11px;
+      background: rgba(15,23,42,0.85);
+    }
 
-    .app-name { font-size: 19px; font-weight: 700; }
-    .app-sub { font-size: 12px; color: #a5b4fc; }
-
+    /* 메인 컨텐츠 영역 */
     .home-body {
       flex: 1;
       width: 100%;
@@ -98,7 +178,25 @@
       padding: 18px 16px 16px;
       display: flex;
       flex-direction: column;
+      justify-content: flex-start;
       gap: 14px;
+    }
+
+    .home-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .home-desc {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+
+    .home-buttons {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .home-btn {
@@ -115,24 +213,37 @@
       color: #e5e7eb;
       box-shadow: 0 8px 18px rgba(15,23,42,0.8);
     }
-
     .home-btn.secondary {
       background: linear-gradient(135deg, #0b1120 0, #020617 100%);
       box-shadow: 0 6px 14px rgba(15,23,42,0.6);
     }
 
-    /* 음성 입력 */
+    .home-btn-main {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .home-btn-sub {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .home-btn-icon {
+      font-size: 20px;
+      opacity: 0.9;
+    }
+
+    /* 음성 입력 버튼 */
     .voice-area {
-      margin-top: 24px;  /* ★ 버튼 위치 많이 내림 */
+      margin-top: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .voice-btn {
-      width: 72px;
-      height: 72px;
+      width: 68px;
+      height: 68px;
       border-radius: 999px;
       border: none;
       background: radial-gradient(circle, #38bdf8 0, #1d4ed8 55%, #020617 100%);
@@ -140,17 +251,18 @@
       justify-content: center;
       align-items: center;
       color: #f9fafb;
-      font-size: 28px;
+      font-size: 26px;
       box-shadow: 0 10px 24px rgba(59,130,246,0.7);
       cursor: pointer;
     }
 
     .voice-label {
-      font-size: 12px;
+      font-size: 11px;
       color: #9ca3af;
       text-align: center;
     }
 
+    /* 하단 네비 바 */
     .bottom-nav {
       position: absolute;
       inset-inline: 0;
@@ -160,7 +272,12 @@
       gap: 40px;
       opacity: 0.7;
     }
-
+    .bottom-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.8);
+    }
     .bottom-home {
       width: 48px;
       height: 5px;
@@ -176,72 +293,116 @@
       <div>
         <div class="splash-title">PROJECT</div>
         <div class="brand">DigitalBridge</div>
+        <div class="splash-sub">
+          디지털이 낯선 어르신을 위한<br/>
+          생활 전자기기 사용 안내 서비스
+        </div>
       </div>
 
       <div class="loader-wrapper">
         <svg class="loader" viewBox="0 0 80 80">
-          <circle class="loader-bg" cx="40" cy="40" r="30" stroke="rgba(148,163,184,0.3)" stroke-width="4"></circle>
-          <circle class="loader-progress" cx="40" cy="40" r="30"
-            stroke="#38bdf8" stroke-width="4"
-            stroke-dasharray="188.4" stroke-dashoffset="188.4"
-            style="animation: fill 3s ease-out forwards;"></circle>
+          <circle class="loader-bg" cx="40" cy="40" r="30" />
+          <circle class="loader-progress" cx="40" cy="40" r="30" />
         </svg>
+        <span>디지털 브릿지를 준비하는 중입니다…</span>
       </div>
     </div>
 
-    <!-- 메인 화면 -->
+    <!-- 메인 홈 화면 -->
     <div id="main" class="screen">
-      <div class="header">
-        <div>
-          <div class="app-name">디지털 브릿지 홈</div>
-          <div class="app-sub">전자기기 사용 도우미</div>
+      <!-- 위쪽 상태바 느낌 -->
+      <div class="status-bar">
+        <div class="status-left">
+          <span class="signal-dot"></span>
+          <span>DigitalBridge</span>
+        </div>
+        <div class="status-right">
+          <span>안심 모드</span>
+          <span class="status-icon"></span>
         </div>
       </div>
 
+      <!-- 헤더 -->
+      <div class="header">
+        <div class="header-left">
+          <div class="app-name">디지털 브릿지 홈</div>
+          <div class="app-sub">모르면 눌러보고, 헷갈리면 말해보는 전자기기 도우미</div>
+        </div>
+        <div class="header-badge">조손 연결 · Beta</div>
+      </div>
+
+      <!-- 본문 카드 영역 -->
       <div class="home-body">
-        <button class="home-btn" id="btnUsage">
-          <div>
-            <div class="home-btn-main">모르는 전자기기 사용법 알아보기</div>
-            <div class="home-btn-sub">
-              TV, 세탁기, 에어컨 등 사용법을 쉽게 설명해드립니다.
-            </div>
+        <div>
+          <div class="home-title">무엇을 도와드릴까요?</div>
+          <div class="home-desc">
+            자주 쓰는 전자기기 사용법을 보고 싶거나,<br/>
+            지금 상황에 맞는 전자기기를 추천받고 싶을 때 아래 버튼을 눌러주세요.
           </div>
-          <span class="home-btn-icon">📘</span>
-        </button>
+        </div>
 
-        <button class="home-btn secondary" id="btnFindDevice">
-          <div>
-            <div class="home-btn-main">필요한 전자기기 찾기</div>
-            <div class="home-btn-sub">
-              상황을 말하면 어울리는 기기를 추천해드립니다.
+        <div class="home-buttons">
+          <button class="home-btn" id="btnUsage">
+            <div>
+              <div class="home-btn-main">모르는 전자기기 사용법 알아보기</div>
+              <div class="home-btn-sub">
+                TV, 세탁기, 에어컨, 전자레인지 등 지금 눈앞에 있는 기기 사용법을 단계별로 안내합니다.
+              </div>
             </div>
-          </div>
-          <span class="home-btn-icon">🧭</span>
-        </button>
+            <span class="home-btn-icon">📘</span>
+          </button>
 
-        <!-- 음성 입력영역 (위치 내림) -->
+          <button class="home-btn secondary" id="btnFindDevice">
+            <div>
+              <div class="home-btn-main">필요한 전자기기 찾기</div>
+              <div class="home-btn-sub">
+                “집이 너무 건조해요”, “청소가 너무 힘들어요”처럼 고민을 말하면 어울리는 전자기기를 추천해 드립니다.
+              </div>
+            </div>
+            <span class="home-btn-icon">🧭</span>
+          </button>
+        </div>
+
         <div class="voice-area">
           <button class="voice-btn" id="voiceBtn">🎤</button>
           <div class="voice-label">
-            음성 버튼을 눌러 필요한 서비스를 찾아보세요!
+            가운데 버튼을 눌러<br/>
+            “세탁기 돌리는 법 알려줘”처럼 말하면<br/>
+            자동으로 알맞은 서비스로 이동합니다.
           </div>
         </div>
       </div>
 
+      <!-- 하단 네비게이션 바 -->
       <div class="bottom-nav">
+        <div class="bottom-dot"></div>
         <div class="bottom-home"></div>
+        <div class="bottom-dot"></div>
       </div>
     </div>
   </div>
 
   <script>
+    // 3초 후 스플래시 → 메인 화면 전환
     window.addEventListener("load", () => {
       setTimeout(() => {
         document.getElementById("splash").style.display = "none";
         document.getElementById("main").classList.add("visible");
       }, 3000);
     });
-  </script>
 
+    // 이후 실제 기능 연결은 나중에 구현용 (현재는 안내만)
+    document.getElementById("btnUsage").addEventListener("click", () => {
+      alert("『모르는 전자기기 사용법 알아보기』 화면으로 이동 (추후 내용 채울 예정)");
+    });
+
+    document.getElementById("btnFindDevice").addEventListener("click", () => {
+      alert("『필요한 전자기기 찾기』 화면으로 이동 (추후 내용 채울 예정)");
+    });
+
+    document.getElementById("voiceBtn").addEventListener("click", () => {
+      alert("음성 입력 시작 (예: “밥솥 사용하는 법 알려줘”) – 나중에 음성인식 기능 연결");
+    });
+  </script>
 </body>
 </html>
