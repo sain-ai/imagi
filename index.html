@@ -2,10 +2,10 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>PROJECT – DigitalBridge (Ultimate Version)</title>
+  <title>PROJECT – DigitalBridge (Voice Nav & Expanded Data)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <style>
-    /* --- [1. 기본 & 폰 프레임 (Flex Layout 유지)] --- */
+    /* --- [1. 기본 & 폰 프레임] --- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       min-height: 100vh;
@@ -27,7 +27,7 @@
       color: #f9fafb;
     }
 
-    /* --- [2. 화면 전환 공통] --- */
+    /* --- [2. 화면 전환] --- */
     .screen {
       position: absolute;
       inset: 0;
@@ -51,7 +51,7 @@
       padding: 20px;
     }
 
-    /* --- [3. 컴포넌트: 로더 & 스플래시] --- */
+    /* --- [3. 컴포넌트] --- */
     .loader { width: 72px; height: 72px; transform: rotate(-90deg); }
     .loader circle { fill: none; stroke-width: 4; stroke-linecap: round; }
     .loader-bg { stroke: rgba(148,163,184,0.35); }
@@ -63,7 +63,7 @@
     .splash-sub { font-size: 15px; color: #cbd5f5; margin-top: 6px; line-height: 1.5; text-align: center; }
     .loader-wrapper { margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #9ca3af; font-size: 13px; }
 
-    /* --- [4. 역할 선택 화면] --- */
+    /* --- [4. 역할 선택] --- */
     .role-wrapper { width: 100%; padding: 28px 16px; display: flex; flex-direction: column; align-items: center; gap: 24px; }
     .role-chip { font-size: 13px; padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.7); color: #cbd5f5; background: rgba(15,23,42,0.9); }
     .role-title { font-size: 22px; font-weight: 700; text-align: center; }
@@ -82,12 +82,11 @@
     .role-main { font-size: 17px; font-weight: 600; }
     .role-sub { font-size: 12px; color: #e5e7eb; opacity: 0.9; line-height: 1.4; }
 
-    /* --- [5. 메인 홈 (Flex Layout)] --- */
+    /* --- [5. 메인 홈] --- */
     .status-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #9ca3af; opacity: 0.9; margin-bottom: 8px; }
     .header { width: 100%; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .app-name { font-size: 21px; font-weight: 700; }
     .app-sub { font-size: 13px; color: #a5b4fc; }
-    /* 모드 변경 버튼 */
     .mode-switch-btn { background: rgba(30,41,59,0.8); border: 1px solid #475569; color: #cbd5f5; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
 
     .home-body {
@@ -100,7 +99,6 @@
     .home-title { font-size: 19px; font-weight: 600; margin-bottom: 4px; }
     .home-desc { font-size: 14px; color: #9ca3af; line-height: 1.5; }
 
-    /* 버튼 & 카드 영역 (Flex) */
     .home-buttons { display: flex; flex-direction: column; gap: 12px; flex: 1; }
     .home-btn {
       flex: 1; width: 100%; border-radius: 16px; padding: 0 18px; border: none;
@@ -116,16 +114,19 @@
     .info-section { display: flex; flex-direction: column; gap: 12px; flex: 1; width: 100%; }
     .info-row { display: flex; gap: 12px; width: 100%; flex: 1; }
     .info-card {
-      flex: 1; height: 100%; padding: 16px 18px; border-radius: 16px;
+      flex: 1; height: 100%; padding: 16px 14px; /* 패딩 약간 줄임 */
+      border-radius: 16px;
       background: rgba(15,23,42,0.98); border: 1px solid rgba(55,65,81,0.95);
       display: flex; flex-direction: column; justify-content: center; gap: 8px;
       cursor: pointer; transition: all 0.15s ease;
     }
     .info-card:hover { transform: translateY(-2px); border-color: #60a5fa; background: rgba(15,23,42,1); }
     .info-card-header { display: flex; align-items: center; justify-content: space-between; }
-    .info-card-title { font-weight: 600; color: #e5e7eb; font-size: 15px; }
+    
+    /* [수정] 글자 크기 14px로 축소하여 한 줄 넘침 방지 */
+    .info-card-title { font-weight: 600; color: #e5e7eb; font-size: 14px; letter-spacing: -0.5px; }
     .info-card-text { color: #9ca3af; line-height: 1.4; font-size: 13px; }
-    .info-card-wide { width: 100%; flex: 1; border-color: rgba(239,68,68,0.3); } /* 긴급은 약간 붉은 테두리 */
+    .info-card-wide { width: 100%; flex: 1; border-color: rgba(239,68,68,0.3); }
 
     .voice-area { padding-top: 6px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
     .voice-btn {
@@ -136,7 +137,7 @@
     }
     .voice-label { font-size: 13px; color: #9ca3af; text-align: center; }
 
-    /* --- [6. 서브 기능 & 채팅 & 영상통화] --- */
+    /* --- [6. 서브 기능] --- */
     .header-nav { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid rgba(31,41,55,0.6); margin-bottom: 16px; }
     .back-btn { background: none; border: none; color: #e5e7eb; font-size: 24px; cursor: pointer; padding: 4px; }
     .page-title { font-size: 18px; font-weight: 600; }
@@ -172,7 +173,7 @@
     .result-desc { font-size: 14px; color: #cbd5f5; margin-bottom: 12px; }
     .buy-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px; }
 
-    /* [NEW] 영상 통화 화면 스타일 */
+    /* [NEW] 영상 통화 */
     .video-call-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
     .video-avatar { width: 120px; height: 120px; background: #475569; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 50px; margin-bottom: 20px; border: 4px solid #38bdf8; animation: pulse 2s infinite; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(56, 189, 248, 0); } 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); } }
@@ -182,7 +183,13 @@
     .camera-feed { position: absolute; inset: 0; background: #1e293b; z-index: -1; border-radius: 20px; opacity: 0; transition: opacity 1s; display: flex; justify-content: center; align-items: center; color: #64748b; font-size: 18px; }
     .camera-feed.connected { opacity: 1; }
     
-    /* [NEW] 손주 모드 대시보드 */
+    /* [NEW] 음성 내비게이션 화면 */
+    .voice-nav-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; }
+    .voice-nav-icon { width: 100px; height: 100px; border-radius: 50%; background: #38bdf8; display: flex; justify-content: center; align-items: center; font-size: 40px; animation: pulse 1.5s infinite; color: #000; }
+    .voice-nav-text { font-size: 22px; font-weight: 700; color: #fff; }
+    .voice-nav-sub { font-size: 16px; color: #9ca3af; }
+    
+    /* 손주 모드 대시보드 */
     .gc-dashboard { display: flex; flex-direction: column; gap: 16px; flex: 1; }
     .gc-card { background: rgba(30,41,59,0.5); border-radius: 16px; padding: 20px; border: 1px solid rgba(75,85,99,0.4); }
     .gc-card-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #e5e7eb; display: flex; justify-content: space-between; }
@@ -213,10 +220,7 @@
       <div class="role-wrapper">
         <div class="role-chip">DigitalBridge · 모드 선택</div>
         <div class="role-title">누구로 이용하시나요?</div>
-        <div class="role-desc">
-          조부모님은 사용법 안내를,<br/>
-          손주는 그 모습을 모니터링합니다.
-        </div>
+        <div class="role-desc">조부모님은 사용법 안내를,<br/>손주는 그 모습을 모니터링합니다.</div>
         <div class="role-boxes">
           <div class="role-card" onclick="goToScreen('screen-grandchild-home')">
             <div class="role-card-icon">🧑‍💻</div>
@@ -260,9 +264,7 @@
           <div class="app-name">DigitalBridge - HOME</div>
           <div class="app-sub">쉽고 간편한 전자기기 도우미</div>
         </div>
-        <button class="mode-switch-btn" onclick="goToScreen('screen-role')">
-          <span>◀ 모드 변경</span>
-        </button>
+        <button class="mode-switch-btn" onclick="goToScreen('screen-role')"><span>◀ 모드 변경</span></button>
       </div>
 
       <div class="home-body">
@@ -275,11 +277,10 @@
           <button class="home-btn" onclick="startUsageFlow()">
             <div>
               <div class="home-btn-main">모르는 전자기기 사용법 알아보기</div>
-              <div class="home-btn-sub">전자레인지, 세탁기 등<br/>눈앞에 있는 기기 사용법을 안내합니다.</div>
+              <div class="home-btn-sub">스마트폰, 키오스크, 밥솥 등<br/>다양한 기기 사용법을 안내합니다.</div>
             </div>
             <span class="home-btn-icon">📘</span>
           </button>
-
           <button class="home-btn secondary" onclick="startFindFlow()">
             <div>
               <div class="home-btn-main">필요한 전자기기 찾기</div>
@@ -303,10 +304,9 @@
                 <div class="info-card-title">많이 확인한 기능</div>
                 <div>⭐</div>
               </div>
-              <div class="info-card-text">외부입력 바꾸기,<br/>소리 키우기 등</div>
+              <div class="info-card-text">외부입력, 소리 키우기<br/>등 인기 기능</div>
             </div>
           </div>
-
           <div class="info-card info-card-wide" style="border-color: rgba(239,68,68,0.5);" onclick="startEmergencyCall()">
             <div class="info-card-header">
               <div class="info-card-title" style="color:#f87171;">긴급 도움! (손주 연결)</div>
@@ -330,23 +330,20 @@
       </div>
       <div class="list-container" id="list-category"></div>
     </div>
-
     <div id="screen-usage-brand" class="screen">
       <div class="header-nav">
         <button class="back-btn" onclick="goToScreen('screen-usage-category')">←</button>
-        <span class="page-title">어느 회사 제품인가요?</span>
+        <span class="page-title">기능 분류 선택</span>
       </div>
       <div class="list-container" id="list-brand"></div>
     </div>
-
     <div id="screen-usage-model" class="screen">
       <div class="header-nav">
         <button class="back-btn" onclick="goToScreen('screen-usage-brand')">←</button>
-        <span class="page-title">어떤 모양인가요?</span>
+        <span class="page-title">세부 기능 선택</span>
       </div>
       <div class="list-container" id="list-model"></div>
     </div>
-
     <div id="screen-usage-guide" class="screen">
       <div class="header-nav">
         <button class="back-btn" onclick="goToScreen('screen-usage-model')">←</button>
@@ -389,13 +386,10 @@
 
     <div id="screen-emergency" class="screen">
       <div class="video-call-ui">
-        <div class="camera-feed" id="camera-feed">
-          [ 손주 얼굴 화면 ]<br/>연결되었습니다.
-        </div>
+        <div class="camera-feed" id="camera-feed">[ 손주 얼굴 화면 ]<br/>연결되었습니다.</div>
         <div class="video-avatar" id="video-avatar">🧑‍💻</div>
         <div class="call-status" id="call-status">연결 중...</div>
         <div class="call-timer" id="call-timer">00:00</div>
-        
         <button class="hangup-btn" onclick="endCall()">📞</button>
       </div>
     </div>
@@ -407,72 +401,107 @@
       </div>
       <div class="gc-dashboard">
         <div class="gc-card" style="border-color:#22c55e;">
-          <div class="gc-card-title">
-            <span>현재 상태</span>
-            <span style="color:#22c55e;">● 온라인</span>
-          </div>
-          <div style="font-size:14px; color:#cbd5f5;">
-            할머니께서 <strong>DigitalBridge</strong> 앱을 사용 중이십니다.<br/>
-            (마지막 접속: 방금 전)
-          </div>
+          <div class="gc-card-title"><span>현재 상태</span><span style="color:#22c55e;">● 온라인</span></div>
+          <div style="font-size:14px; color:#cbd5f5;">할머니께서 <strong>DigitalBridge</strong> 앱을 사용 중이십니다.<br/>(마지막 접속: 방금 전)</div>
         </div>
-
         <div class="gc-card">
           <div class="gc-card-title">최근 활동 내역</div>
           <div id="gc-log-list">
-            <div class="log-item">
-              <span class="log-time">10:45</span>
-              <span>'전자레인지' 사용법을 확인하셨습니다.</span>
-            </div>
-            <div class="log-item">
-              <span class="log-time">10:42</span>
-              <span>'자주 묻는 질문' 메뉴에 진입하셨습니다.</span>
-            </div>
+            <div class="log-item"><span class="log-time">10:45</span><span>'스마트폰 > 카카오톡' 사용법 확인</span></div>
+            <div class="log-item"><span class="log-time">10:42</span><span>'자주 묻는 질문' 메뉴 진입</span></div>
           </div>
         </div>
+        <button class="home-btn" style="flex:0; margin-top:auto; background:#334155; justify-content:center;" onclick="alert('할머니께 전화를 겁니다...')"><span style="font-weight:bold;">할머니께 전화 걸기</span></button>
+      </div>
+    </div>
 
-        <button class="home-btn" style="flex:0; margin-top:auto; background:#334155; justify-content:center;" onclick="alert('할머니께 전화를 겁니다...')">
-          <span style="font-weight:bold;">할머니께 전화 걸기</span>
-        </button>
+    <div id="screen-voice-nav" class="screen">
+      <div class="header-nav">
+        <button class="back-btn" onclick="goToScreen('screen-home')">✕</button>
+        <span class="page-title">음성 검색</span>
+      </div>
+      <div class="voice-nav-ui">
+        <div class="voice-nav-icon">🎤</div>
+        <div>
+          <div class="voice-nav-text" id="voice-status-text">듣고 있습니다...</div>
+          <div class="voice-nav-sub">"카카오톡 글자 크게" 처럼<br/>궁금한 것을 말씀해주세요.</div>
+        </div>
       </div>
     </div>
 
   </div>
 
   <script>
-    // --- [데이터 정의] ---
+    // --- [대폭 추가된 데이터] ---
     const applianceData = {
-      "microwave": { name: "전자레인지", icon: "🍱", brands: ["삼성전자", "LG전자", "SK매직"], models: ["버튼식", "다이얼식", "터치식"], guide: [{text:"문을 열고 음식을 넣으세요.", img:"🚪"}, {text:"시간을 맞추세요.", img:"⏲️"}, {text:"시작 버튼을 누르세요.", img:"▶️"}] },
-      "washing": { name: "세탁기", icon: "👕", brands: ["삼성전자", "LG전자"], models: ["통돌이", "드럼"], guide: [{text:"빨래를 넣으세요.", img:"🧺"}, {text:"전원을 켜세요.", img:"🔘"}, {text:"동작 버튼을 누르세요.", img:"▶️"}] },
-      "ac": { name: "에어컨", icon: "❄️", brands: ["삼성전자", "LG전자"], models: ["스탠드형", "벽걸이형"], guide: [{text:"리모컨 전원을 누르세요.", img:"📱"}, {text:"온도를 낮추세요.", img:"🌡️"}] },
-      "tv": { name: "TV", icon: "📺", brands: ["삼성전자", "LG전자"], models: ["리모컨"], guide: [{text:"빨간 전원 버튼을 누르세요.", img:"🔴"}, {text:"채널을 돌리세요.", img:"📺"}] }
+      "smartphone": { 
+        name: "스마트폰 기초", icon: "📱", 
+        brands: ["기본 설정", "카카오톡", "유튜브"], 
+        models: ["글자 크기 조절", "벨소리 변경", "사진 전송", "영상 보기"],
+        guide: [
+          {text:"설정(톱니바퀴) 아이콘을 찾아 누르세요.", img:"⚙️"}, 
+          {text:"'디스플레이' 또는 '화면' 메뉴를 누르세요.", img:"🔆"}, 
+          {text:"'글자 크기와 스타일'을 눌러 조절하세요.", img:"🔠"}
+        ]
+      },
+      "kiosk": {
+        name: "키오스크 (무인주문)", icon: "🍔",
+        brands: ["카페", "햄버거 가게", "식당"],
+        models: ["매장에서 먹기", "포장하기"],
+        guide: [
+          {text:"화면을 한 번 터치하세요.", img:"👆"},
+          {text:"'매장에서 식사' 또는 '포장하기'를 고르세요.", img:"🥡"},
+          {text:"원하는 메뉴 그림을 누르고 '결제하기'를 누르세요.", img:"💳"}
+        ]
+      },
+      "ricecooker": {
+        name: "전기 밥솥", icon: "🍚",
+        brands: ["쿠쿠 (CUCKOO)", "쿠첸 (CUCHEN)"],
+        models: ["백미 취사", "잡곡 취사", "보온 취소"],
+        guide: [
+          {text:"쌀을 씻어 내솥에 넣고 뚜껑을 잠그세요.", img:"🔒"},
+          {text:"'백미' 또는 '잡곡' 버튼을 누르세요.", img:"🔘"},
+          {text:"빨간색 '취사' 버튼을 꾹 누르세요.", img:"🔥"}
+        ]
+      },
+      "airfryer": {
+        name: "에어프라이어", icon: "🍤",
+        brands: ["필립스", "노브랜드", "기타"],
+        models: ["감자튀김", "치킨 데우기", "군고구마"],
+        guide: [
+          {text:"바구니에 음식을 겹치지 않게 넣으세요.", img:"🧺"},
+          {text:"온도 다이얼을 180도로 맞추세요.", img:"🌡️"},
+          {text:"시간 다이얼을 돌려 10~15분에 맞추세요.", img:"⏰"}
+        ]
+      },
+      // 기존 기기
+      "microwave": { name: "전자레인지", icon: "🍱", brands: ["삼성전자", "LG전자"], models: ["버튼식", "다이얼식"], guide: [{text:"문을 열고 음식을 넣으세요.", img:"🚪"}, {text:"조리 시작 버튼을 누르세요.", img:"▶️"}] },
+      "washing": { name: "세탁기", icon: "👕", brands: ["삼성전자", "LG전자"], models: ["표준 세탁", "이불 빨래"], guide: [{text:"빨래와 세제를 넣으세요.", img:"🧺"}, {text:"전원을 켜고 동작 버튼을 누르세요.", img:"▶️"}] },
+      "tv": { name: "TV", icon: "📺", brands: ["삼성전자", "LG전자"], models: ["전원 켜기", "채널 변경", "외부입력"], guide: [{text:"빨간 전원 버튼을 누르세요.", img:"🔴"}, {text:"외부입력 버튼을 눌러 TV로 맞추세요.", img:"📺"}] }
     };
 
     const faqData = [
-      { q: "글자 크기가 너무 작아요", a: "설정 > 화면 > 글자 크기에서 조절할 수 있습니다." },
-      { q: "와이파이가 안 돼요", a: "공유기 전원을 껐다가 켜보세요." },
-      { q: "소리가 안 들려요", a: "옆면의 볼륨 버튼을 눌러보세요." },
-      { q: "화면이 너무 어두워요", a: "상단바를 내려서 밝기를 조절하세요." }
+      { q: "글자 크기가 너무 작아요", a: "스마트폰 기초 > 기본 설정 > 글자 크기 메뉴를 확인하세요." },
+      { q: "와이파이가 안 돼요", a: "상단바를 내려 와이파이 아이콘이 파란색인지 확인하세요." },
+      { q: "소리가 안 들려요", a: "옆면의 볼륨 버튼을 위쪽으로 눌러보세요." }
     ];
 
     const popularData = [
-      { title: "TV 외부입력 바꾸기", desc: "셋톱박스 화면이 안 나올 때" },
-      { title: "보일러 온수 전용 끄기", desc: "난방비 절약 방법" },
-      { title: "스마트폰 벨소리 키우기", desc: "전화 소리가 안 들릴 때" }
+      { title: "TV 외부입력 바꾸기", desc: "화면이 안 나올 때 해결법" },
+      { title: "카카오톡 사진 보내기", desc: "손주에게 사진 보내는 법" },
+      { title: "보일러 온수 전용", desc: "여름철 가스비 절약" }
     ];
 
-    // --- [변수] ---
     let currentCategory, currentBrand, currentModel, isRecording = false;
     let callTimerIntv;
 
-    // --- [화면 이동] ---
+    // --- [공통 함수] ---
     function goToScreen(screenId) {
       document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
       const target = document.getElementById(screenId);
       if (target) target.classList.add('active');
     }
 
-    // --- [초기화] ---
     window.addEventListener('load', () => {
       setTimeout(() => goToScreen('screen-role'), 2500);
       const obs = new MutationObserver((mutations) => {
@@ -485,7 +514,7 @@
       obs.observe(document.getElementById('screen-loading2'), { attributes: true });
     });
 
-    // --- [기능 1: 사용법] ---
+    // --- [사용법 로직] ---
     function startUsageFlow() {
       const list = document.getElementById('list-category');
       list.innerHTML = ''; 
@@ -505,7 +534,7 @@
       applianceData[currentCategory].brands.forEach(brand => {
         const div = document.createElement('div');
         div.className = 'list-item';
-        div.innerHTML = `<span class="list-text">${brand}</span><span style="font-size:24px;">🏢</span>`;
+        div.innerHTML = `<span class="list-text">${brand}</span><span style="font-size:24px;">📁</span>`;
         div.onclick = () => { currentBrand = brand; showModelList(); };
         list.appendChild(div);
       });
@@ -526,6 +555,12 @@
     function showGuide() {
       const content = document.getElementById('guide-content');
       content.innerHTML = '';
+      const titleDiv = document.createElement('div');
+      titleDiv.style.marginBottom = "10px";
+      titleDiv.style.color = "#38bdf8";
+      titleDiv.innerHTML = `${applianceData[currentCategory].name} > ${currentModel}`;
+      content.appendChild(titleDiv);
+
       applianceData[currentCategory].guide.forEach((step, index) => {
         const div = document.createElement('div');
         div.className = 'guide-step';
@@ -535,7 +570,7 @@
       goToScreen('screen-usage-guide');
     }
 
-    // --- [기능 2: 기기 찾기 (채팅)] ---
+    // --- [기기 찾기 채팅] ---
     function startFindFlow() {
       const chatBox = document.getElementById('chat-box');
       chatBox.innerHTML = `<div class="message msg-ai">안녕하세요! 어르신.<br/>어떤 점이 불편하신가요?<br/>(예: "청소가 힘들어요", "건조해요")</div>`;
@@ -572,12 +607,26 @@
       }, 800);
     }
 
-    // --- [NEW 기능 3: 음성 비서 (하단 버튼)] ---
+    // --- [NEW] 음성 내비게이션 (자동 납치 기능) ---
     function startGlobalVoice() {
-      alert("🎤 음성 비서\n\n'볼륨 조절'이라고 말씀하시면\n해당 가이드로 바로 이동합니다.\n(데모 기능)");
+      goToScreen('screen-voice-nav');
+      const statusText = document.getElementById('voice-status-text');
+      statusText.innerText = "듣고 있습니다...";
+      
+      // 2.5초 뒤 인식 성공 시뮬레이션
+      setTimeout(() => {
+        statusText.innerText = "\"카카오톡 글자 크게\"";
+        setTimeout(() => {
+          // 스마트폰 > 기본설정 > 글자크기 로 강제 이동
+          currentCategory = "smartphone";
+          currentBrand = "기본 설정"; // 여기선 카테고리 역할
+          currentModel = "글자 크기 조절";
+          showGuide();
+        }, 1000);
+      }, 2500);
     }
 
-    // --- [NEW 기능 4: 자주 묻는 질문] ---
+    // --- [기타 서브 기능] ---
     function startFaqFlow() {
       const list = document.getElementById('list-faq');
       list.innerHTML = '';
@@ -589,8 +638,6 @@
       });
       goToScreen('screen-faq');
     }
-
-    // --- [NEW 기능 5: 많이 본 기능] ---
     function startPopularFlow() {
       const list = document.getElementById('list-popular');
       list.innerHTML = '';
@@ -602,26 +649,20 @@
       });
       goToScreen('screen-popular');
     }
-
-    // --- [NEW 기능 6: 긴급 도움 (화상 통화)] ---
     function startEmergencyCall() {
       goToScreen('screen-emergency');
       const status = document.getElementById('call-status');
       const timer = document.getElementById('call-timer');
       const feed = document.getElementById('camera-feed');
       const avatar = document.getElementById('video-avatar');
-      
       status.innerText = "손주에게 연결 중...";
       timer.innerText = "00:00";
       feed.classList.remove('connected');
       avatar.style.display = "flex";
-
-      // 2초 후 연결 시뮬레이션
       setTimeout(() => {
         status.innerText = "손주 (연결됨)";
         feed.classList.add('connected');
         avatar.style.display = "none";
-        
         let sec = 0;
         clearInterval(callTimerIntv);
         callTimerIntv = setInterval(() => {
@@ -632,7 +673,6 @@
         }, 1000);
       }, 2000);
     }
-
     function endCall() {
       clearInterval(callTimerIntv);
       alert("통화가 종료되었습니다.");
