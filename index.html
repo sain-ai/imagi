@@ -2,595 +2,598 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>DigitalBridge - 효도 모드</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+  <title>PROJECT – DigitalBridge (Interactive Feedback)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <style>
-    /* --- [기본 설정] --- */
+    /* --- [1. 기본 설정 & 프레임] --- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #000;
-      font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-      color: #fff;
+      background: #111827;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    
-    /* 폰 프레임 */
     .phone {
       width: 100%;
-      max-width: 450px; /* 조금 더 넓게 */
-      height: 90vh;
-      max-height: 850px;
-      background: #121212; /* 완전 검정보다는 눈 편한 짙은 회색 */
-      border-radius: 20px;
+      max-width: 420px;
+      aspect-ratio: 9 / 19.5;
+      background: #020617;
+      border-radius: 28px;
       position: relative;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      border: 4px solid #333;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      color: #f9fafb;
     }
 
-    /* --- [화면 공통] --- */
+    /* --- [2. 화면 전환] --- */
     .screen {
-      flex: 1;
-      display: none; /* 기본 숨김 */
-      flex-direction: column;
-      padding: 20px;
-      padding-bottom: 90px; /* 하단 버튼 공간 확보 */
-      overflow-y: auto;
-    }
-    .screen.active { display: flex; }
-    
-    /* 스크롤바 숨김 (깔끔하게) */
-    ::-webkit-scrollbar { width: 0px; }
-
-    /* --- [상단 헤더] --- */
-    .top-header {
-      padding: 15px 20px;
-      background: #1f1f1f;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #333;
-    }
-    .app-title { font-size: 22px; font-weight: bold; color: #fff; }
-    .mode-badge {
-      background: #444; padding: 6px 12px; border-radius: 20px; font-size: 14px;
-    }
-
-    /* --- [하단 고정 내비게이션 (핵심!)] --- */
-    .bottom-nav {
       position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 80px;
-      background: #1f1f1f;
-      border-top: 2px solid #333;
-      display: flex;
-      z-index: 100;
-    }
-    .nav-btn {
-      flex: 1;
-      border: none;
-      background: none;
-      color: #fff;
-      font-size: 18px;
-      font-weight: bold;
+      inset: 0;
       display: flex;
       flex-direction: column;
+      background: linear-gradient(180deg, #0f172a 0, #020617 42%, #020617 100%);
+      padding: 18px 18px 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 0;
+    }
+    .screen.active {
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 10;
+    }
+    .screen.center-layout {
       justify-content: center;
       align-items: center;
-      gap: 5px;
-      cursor: pointer;
-    }
-    .nav-btn:active { background: #333; }
-    .nav-btn.home { border-right: 1px solid #333; background: #222; }
-    .nav-btn.back { background: #222; }
-    .nav-icon { font-size: 24px; }
-
-    /* --- [메인 홈 버튼들 (초대형)] --- */
-    .big-menu-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      height: 100%;
-      justify-content: center;
-    }
-    .big-btn {
-      flex: 1;
-      border-radius: 25px;
-      border: none;
       padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      text-align: left;
-      cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      transition: transform 0.1s;
     }
-    .big-btn:active { transform: scale(0.98); }
+
+    /* --- [3. UI 컴포넌트] --- */
+    .loader { width: 72px; height: 72px; transform: rotate(-90deg); }
+    .loader circle { fill: none; stroke-width: 4; stroke-linecap: round; }
+    .loader-bg { stroke: rgba(148,163,184,0.35); }
+    .loader-progress { stroke: #38bdf8; stroke-dasharray: 188.4; stroke-dashoffset: 188.4; animation: progressFill 3s ease-out forwards; }
+    @keyframes progressFill { to { stroke-dashoffset: 0; } }
+
+    .splash-title { font-size: 24px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+    .brand { font-size: 20px; font-weight: 600; margin-top: 4px; color: #38bdf8; }
+    .splash-sub { font-size: 15px; color: #cbd5f5; margin-top: 6px; line-height: 1.5; text-align: center; }
+    .loader-wrapper { margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #9ca3af; font-size: 13px; }
+
+    /* 역할 선택 */
+    .role-wrapper { width: 100%; padding: 28px 16px; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+    .role-chip { font-size: 13px; padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.7); color: #cbd5f5; background: rgba(15,23,42,0.9); }
+    .role-title { font-size: 22px; font-weight: 700; text-align: center; }
+    .role-desc { font-size: 14px; color: #9ca3af; text-align: center; line-height: 1.5; }
+    .role-boxes { margin-top: 12px; width: 100%; display: flex; gap: 16px; }
+    .role-card {
+      flex: 1; aspect-ratio: 4 / 5;
+      border-radius: 20px; padding: 20px 14px;
+      background: linear-gradient(150deg, #020617 0, #020617 45%, #0f172a 100%);
+      border: 1px solid rgba(148,163,184,0.6);
+      display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 10px;
+      cursor: pointer; text-align: center; box-shadow: 0 10px 24px rgba(15,23,42,0.9); transition: 0.18s ease;
+    }
+    .role-card.active { background: linear-gradient(145deg, #1d4ed8 0, #38bdf8 100%); border-color: #93c5fd; }
+    .role-card-icon { font-size: 32px; margin-bottom: 4px; }
+    .role-main { font-size: 17px; font-weight: 600; }
+    .role-sub { font-size: 12px; color: #e5e7eb; opacity: 0.9; line-height: 1.4; }
+
+    /* 메인 홈 */
+    .status-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #9ca3af; opacity: 0.9; margin-bottom: 8px; }
+    .header { width: 100%; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .app-name { font-size: 21px; font-weight: 700; }
+    .app-sub { font-size: 13px; color: #a5b4fc; }
+    .mode-switch-btn { background: rgba(30,41,59,0.8); border: 1px solid #475569; color: #cbd5f5; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+
+    .home-body {
+      flex: 1; width: 100%; margin-top: 4px;
+      background: rgba(15,23,42,0.96); border-radius: 20px; border: 1px solid rgba(31,41,55,0.85);
+      padding: 20px 18px 16px;
+      display: flex; flex-direction: column; gap: 16px; 
+      position: relative;
+    }
+    .home-title { font-size: 19px; font-weight: 600; margin-bottom: 4px; }
+    .home-desc { font-size: 14px; color: #9ca3af; line-height: 1.5; }
+
+    .home-buttons { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+    .home-btn {
+      flex: 1; width: 100%; border-radius: 16px; padding: 0 18px; border: none;
+      text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(135deg, #1e293b 0, #0f172a 100%); color: #e5e7eb;
+      box-shadow: 0 8px 18px rgba(15,23,42,0.8);
+    }
+    .home-btn.secondary { background: linear-gradient(135deg, #0b1120 0, #020617 100%); box-shadow: 0 6px 14px rgba(15,23,42,0.6); }
+    .home-btn-main { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+    .home-btn-sub { font-size: 13px; color: #9ca3af; line-height: 1.4; }
+    .home-btn-icon { font-size: 24px; opacity: 0.9; }
+
+    .info-section { display: flex; flex-direction: column; gap: 12px; flex: 1; width: 100%; }
+    .info-row { display: flex; gap: 12px; width: 100%; flex: 1; }
+    .info-card {
+      flex: 1; height: 100%; padding: 16px 14px;
+      border-radius: 16px;
+      background: rgba(15,23,42,0.98); border: 1px solid rgba(55,65,81,0.95);
+      display: flex; flex-direction: column; justify-content: center; gap: 8px;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .info-card:hover { transform: translateY(-2px); border-color: #60a5fa; background: rgba(15,23,42,1); }
+    .info-card-header { display: flex; align-items: center; justify-content: space-between; }
+    .info-card-title { font-weight: 600; color: #e5e7eb; font-size: 14px; letter-spacing: -0.5px; }
+    .info-card-text { color: #9ca3af; line-height: 1.4; font-size: 13px; }
+    .info-card-wide { width: 100%; flex: 1; border-color: rgba(239,68,68,0.3); }
+
+    .voice-area { padding-top: 6px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .voice-btn {
+      width: 70px; height: 70px; border-radius: 999px; border: none;
+      background: radial-gradient(circle, #38bdf8 0, #1d4ed8 55%, #020617 100%);
+      display: flex; justify-content: center; align-items: center; color: #f9fafb;
+      font-size: 28px; box-shadow: 0 10px 24px rgba(59,130,246,0.7); cursor: pointer;
+    }
+    .voice-label { font-size: 13px; color: #9ca3af; text-align: center; }
+
+    /* --- [서브 기능 공통] --- */
+    .header-nav { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid rgba(31,41,55,0.6); margin-bottom: 16px; }
+    .back-btn { background: none; border: none; color: #e5e7eb; font-size: 24px; cursor: pointer; padding: 4px; }
+    .page-title { font-size: 18px; font-weight: 600; }
+    .list-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+    .list-item { padding: 24px 20px; border-radius: 16px; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(75, 85, 99, 0.4); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+    .list-item:active { background: #38bdf8; color: #000; }
+    .list-text { font-size: 18px; font-weight: 500; }
+    .guide-step { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 16px; border: 1px solid #374151; }
+    .step-num { font-size: 15px; color: #38bdf8; font-weight: 700; margin-bottom: 8px; }
+    .step-content { font-size: 17px; line-height: 1.5; color: #f3f4f6; }
+    .step-img-box { margin-top: 12px; width: 100%; height: 140px; background: #0f172a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #475569; border: 1px dashed #475569; }
+
+    /* 채팅 */
+    .chat-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-bottom: 10px; }
+    .message { max-width: 85%; padding: 14px 18px; border-radius: 16px; font-size: 16px; line-height: 1.4; }
+    .msg-ai { align-self: flex-start; background: #334155; color: #fff; border-bottom-left-radius: 2px; }
+    .msg-user { align-self: flex-end; background: #2563eb; color: #fff; border-bottom-right-radius: 2px; }
+    .chat-input-area { display: flex; gap: 10px; align-items: center; background: #1e293b; padding: 10px; border-radius: 999px; border: 1px solid #374151; }
+    .chat-input { flex: 1; background: none; border: none; color: white; padding-left: 10px; font-size: 16px; outline: none; }
+    .send-btn, .mic-btn { width: 44px; height: 44px; border-radius: 50%; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 20px; }
+    .mic-btn { background: #dc2626; color: white; }
+    .mic-btn.idle { background: #475569; }
+    .send-btn { background: #38bdf8; color: #000; font-weight: bold; }
+    .result-card { background: linear-gradient(135deg, #1e293b 0, #0f172a 100%); padding: 18px; border-radius: 14px; border: 1px solid #38bdf8; margin-top: 8px; }
+    .result-title { color: #38bdf8; font-weight: 700; margin-bottom: 6px; font-size: 17px; }
+    .result-desc { font-size: 14px; color: #cbd5f5; margin-bottom: 12px; }
+    .buy-btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px; }
+
+    /* 통화 UI */
+    .call-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; width: 100%; }
+    .call-avatar { width: 120px; height: 120px; background: #475569; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 50px; margin-bottom: 20px; border: 4px solid #38bdf8; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(56, 189, 248, 0); } 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); } }
+    .call-status { font-size: 22px; font-weight: 600; margin-bottom: 10px; color: #f9fafb; }
+    .call-timer { font-size: 16px; color: #9ca3af; margin-bottom: 50px; }
+    .hangup-btn { width: 70px; height: 70px; background: #ef4444; border-radius: 50%; border: none; color: white; font-size: 30px; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 20px rgba(239,68,68,0.4); }
+    /* 조부모 모드 영상통화 배경 */
+    .camera-feed { position: absolute; inset: 0; background: #1e293b; z-index: -1; border-radius: 20px; opacity: 0; transition: opacity 1s; display: flex; justify-content: center; align-items: center; color: #64748b; font-size: 18px; }
+    .camera-feed.connected { opacity: 1; }
     
-    /* 색상 구분 (신호등) */
-    .btn-blue { background: #2563eb; color: #fff; }
-    .btn-green { background: #16a34a; color: #fff; }
-    .btn-red { background: #dc2626; color: #fff; }
-    .btn-gray { background: #4b5563; color: #fff; } /* 자주 묻는 질문용 */
-
-    .btn-text {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .btn-title { font-size: 28px; font-weight: 800; line-height: 1.2; }
-    .btn-sub { font-size: 16px; opacity: 0.9; font-weight: normal; }
-    .btn-icon { font-size: 50px; opacity: 0.9; }
-
-    /* --- [목록 스타일 (큼직하게)] --- */
-    .list-item {
-      background: #2d2d2d;
-      padding: 30px 20px; /* 터치 영역 확대 */
-      margin-bottom: 15px;
-      border-radius: 15px;
-      font-size: 22px;
-      font-weight: bold;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border: 1px solid #444;
-    }
-    .list-item:active { background: #2563eb; border-color: #2563eb; }
-
-    /* --- [단계별 가이드 (큼직하게)] --- */
-    .guide-box {
-      background: #2d2d2d;
-      padding: 25px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .guide-step-num { 
-      background: #2563eb; color: #fff; 
-      display: inline-block; padding: 5px 15px; 
-      border-radius: 20px; font-weight: bold; margin-bottom: 15px;
-    }
-    .guide-text { font-size: 22px; line-height: 1.5; margin-bottom: 15px; }
-    .guide-img { font-size: 80px; margin: 10px 0; }
-
-    /* --- [음성/채팅 화면] --- */
-    .voice-ui {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 30px;
-    }
-    .mic-circle {
-      width: 150px; height: 150px;
-      background: #16a34a;
-      border-radius: 50%;
-      display: flex; justify-content: center; align-items: center;
-      font-size: 70px;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); } 70% { box-shadow: 0 0 0 30px rgba(22, 163, 74, 0); } 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); } }
+    /* 음성 내비 */
+    .voice-nav-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; width: 100%; }
+    .voice-nav-icon { width: 100px; height: 100px; border-radius: 50%; background: #38bdf8; display: flex; justify-content: center; align-items: center; font-size: 40px; animation: pulse 1.5s infinite; color: #000; }
+    .voice-nav-text { font-size: 22px; font-weight: 700; color: #fff; }
+    .voice-nav-sub { font-size: 16px; color: #9ca3af; }
     
-    .chat-input-row {
-      width: 100%;
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .big-input {
-      flex: 1;
-      height: 60px;
-      border-radius: 15px;
-      border: 2px solid #555;
-      background: #000;
-      color: #fff;
-      font-size: 18px;
-      padding: 0 15px;
-    }
-    .big-send-btn {
-      width: 80px;
-      height: 60px;
-      background: #2563eb;
-      color: #fff;
-      border: none;
-      border-radius: 15px;
-      font-size: 18px;
-      font-weight: bold;
-    }
+    /* [손주 모드 대시보드] */
+    .gc-dashboard { display: flex; flex-direction: column; gap: 16px; flex: 1; overflow-y:auto; padding-bottom:10px; }
+    .gc-card { background: rgba(30,41,59,0.5); border-radius: 16px; padding: 20px; border: 1px solid rgba(75,85,99,0.4); }
+    .gc-card-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #e5e7eb; display: flex; justify-content: space-between; align-items:center; }
+    
+    .event-progress-bg { width: 100%; height: 8px; background: #1e293b; border-radius: 99px; overflow: hidden; margin-top: 10px; }
+    .event-progress-bar { width: 70%; height: 100%; background: linear-gradient(90deg, #38bdf8, #22c55e); }
+    .event-text { font-size: 12px; color: #9ca3af; margin-top: 6px; display: flex; justify-content: space-between; }
+    .log-item { display: flex; flex-direction: column; gap: 4px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 12px; }
+    .log-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .log-header { display: flex; justify-content: space-between; font-size: 12px; color: #9ca3af; }
+    .log-content { font-size: 14px; color: #e5e7eb; }
 
-    /* --- [손주 모드 (대시보드)] --- */
-    /* 손주 모드는 조금 더 세련되고 정보 위주로 */
-    .gc-header { padding: 20px; font-size: 20px; font-weight: bold; border-bottom: 1px solid #333; }
-    .gc-card { background: #222; padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #444; }
-    .gc-title { font-size: 16px; color: #aaa; margin-bottom: 10px; }
-    .gc-stat { font-size: 24px; font-weight: bold; color: #fff; }
-    .match-btn {
-      width: 100%; padding: 20px; font-size: 20px; font-weight: bold; 
-      border-radius: 15px; border: none; cursor: pointer; margin-top: 10px;
-    }
-    .btn-on { background: #2563eb; color: white; }
-    .btn-off { background: #dc2626; color: white; }
+    /* 레이더 스캔 애니메이션 (대기 중) */
+    .radar-scanner { width: 140px; height: 140px; background: rgba(56,189,248,0.1); border-radius: 50%; border: 1px solid rgba(56,189,248,0.3); position: relative; display: flex; justify-content: center; align-items: center; margin: 20px auto; }
+    .radar-scanner::after { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(transparent, rgba(56,189,248,0.4)); animation: radarSpin 2s linear infinite; }
+    @keyframes radarSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .radar-status { font-size: 18px; font-weight: 700; color: #38bdf8; text-align: center; margin-top: 10px; }
 
-    /* --- [평가 팝업] --- */
-    .feedback-overlay {
-      position: absolute; inset: 0; background: rgba(0,0,0,0.9); z-index: 200;
-      display: none; flex-direction: column; justify-content: center; align-items: center;
-    }
-    .feedback-overlay.show { display: flex; }
-    .star-row { font-size: 50px; color: #fbbf24; margin: 20px 0; }
+    /* [NEW] 피드백(평가) 화면 스타일 수정 */
+    .feedback-ui { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; position: relative; }
+    /* 별점 컨테이너 */
+    .stars-container { display: flex; gap: 8px; }
+    .star { font-size: 36px; cursor: pointer; color: #4b5563; transition: color 0.2s; }
+    .star.filled { color: #fbbf24; }
+    .feedback-btn { padding: 14px 40px; border-radius: 99px; background: #2563eb; color: white; border: none; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+    .feedback-btn:active { background: #1d4ed8; }
+    /* 감사 메시지 (초기엔 숨김) */
+    .thankyou-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: 700; color: #38bdf8; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; width: 100%; }
+    /* 피드백 입력 UI (감사 메시지 뜰 때 숨김) */
+    .feedback-input-ui { transition: opacity 0.5s ease; }
 
   </style>
 </head>
 <body>
-
   <div class="phone">
     
-    <div class="top-header">
-      <div class="app-title">디지털 브릿지</div>
-      <div class="mode-badge" id="header-mode-text">어르신 모드</div>
+    <div id="screen-splash" class="screen center-layout active">
+      <div style="text-align: center;">
+        <div class="splash-title">PROJECT</div>
+        <div class="brand">DigitalBridge</div>
+        <div class="splash-sub">쉽고 간편한<br/>생활 전자기기 사용 안내 서비스</div>
+      </div>
+      <div class="loader-wrapper">
+        <svg class="loader" viewBox="0 0 80 80">
+          <circle class="loader-bg" cx="40" cy="40" r="30" />
+          <circle class="loader-progress" cx="40" cy="40" r="30" />
+        </svg>
+        <span>준비하는 중입니다…</span>
+      </div>
     </div>
 
-    <div id="screen-role" class="screen active" style="padding-bottom: 20px;">
-      <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
-        <h2 style="font-size: 28px; margin-bottom: 10px;">누구신가요?</h2>
-        <p style="color: #aaa; font-size: 18px;">사용하실 분을 선택해주세요.</p>
+    <div id="screen-role" class="screen center-layout">
+      <div class="role-wrapper">
+        <div class="role-chip">DigitalBridge · 모드 선택</div>
+        <div class="role-title">누구로 이용하시나요?</div>
+        <div class="role-desc">조부모님은 사용법 안내를,<br/>손주역할은 도움을 드립니다.</div>
+        <div class="role-boxes">
+          <div class="role-card" onclick="goToScreen('screen-grandchild-home')">
+            <div class="role-card-icon">🧑‍💻</div>
+            <div class="role-main">손주 모드</div>
+            <div class="role-sub">디지털 도움 활동 할<br/>청년 봉사자</div>
+          </div>
+          <div class="role-card active" onclick="goToScreen('screen-loading2')">
+            <div class="role-card-icon">👵</div>
+            <div class="role-main">조부모 모드</div>
+            <div class="role-sub">사용법이 궁금하신<br/>어르신</div>
+          </div>
+        </div>
       </div>
-      
-      <div style="display: flex; flex-direction: column; gap: 20px;">
-        <button class="big-btn btn-blue" style="height: 150px;" onclick="setMode('grandparent')">
-          <div class="btn-text">
-            <span class="btn-title">어르신</span>
-            <span class="btn-sub">사용법 배우기 / 도움 요청</span>
-          </div>
-          <span class="btn-icon">👵</span>
-        </button>
+    </div>
 
-        <button class="big-btn btn-gray" style="height: 150px;" onclick="setMode('grandchild')">
-          <div class="btn-text">
-            <span class="btn-title">손주 (봉사자)</span>
-            <span class="btn-sub">도와주러 왔어요</span>
-          </div>
-          <span class="btn-icon">🧑‍💻</span>
-        </button>
+    <div id="screen-loading2" class="screen center-layout">
+      <div style="text-align:center; gap:16px; display:flex; flex-direction:column;">
+        <div style="font-size:20px; font-weight:600;">조부모 모드를 준비하고 있어요</div>
+        <div style="font-size:14px; color:#9ca3af;">어르신께 꼭 필요한 정보를<br/>보기 좋게 정리하는 중입니다…</div>
+      </div>
+      <div class="loader-wrapper">
+        <svg class="loader" viewBox="0 0 80 80">
+          <circle class="loader-bg" cx="40" cy="40" r="30" />
+          <circle class="loader-progress" cx="40" cy="40" r="30" />
+        </svg>
+        <span>잠시만 기다려 주세요</span>
       </div>
     </div>
 
     <div id="screen-home" class="screen">
-      <div class="big-menu-container">
-        
-        <button class="big-btn btn-blue" onclick="startUsageFlow()">
-          <div class="btn-text">
-            <span class="btn-title">사용법 공부</span>
-            <span class="btn-sub">밥솥, 세탁기 등<br>사용법 보기</span>
-          </div>
-          <span class="btn-icon">📘</span>
-        </button>
+      <div class="status-bar">
+        <div class="status-left">
+          <span style="width:6px; height:6px; background:#22c55e; border-radius:50%; display:inline-block; margin-right:4px;"></span>
+          <span>DigitalBridge</span>
+        </div>
+        <div class="status-right"><span>안심 모드 ON</span></div>
+      </div>
 
-        <button class="big-btn btn-green" onclick="startVoiceSearch()">
-          <div class="btn-text">
-            <span class="btn-title">말로 찾기</span>
-            <span class="btn-sub">"카톡 글자 크게"<br>라고 말해보세요</span>
-          </div>
-          <span class="btn-icon">🎤</span>
-        </button>
+      <div class="header">
+        <div class="header-left">
+          <div class="app-name">DigitalBridge - HOME</div>
+          <div class="app-sub">쉽고 간편한 전자기기 도우미</div>
+        </div>
+        <button class="mode-switch-btn" onclick="goToScreen('screen-role')"><span>◀ 모드 변경</span></button>
+      </div>
 
-        <button class="big-btn btn-red" onclick="startEmergencyCall()">
-          <div class="btn-text">
-            <span class="btn-title">손주 부르기</span>
-            <span class="btn-sub">봉사자와 바로 연결<br>(긴급 도움)</span>
-          </div>
-          <span class="btn-icon">🚨</span>
-        </button>
+      <div class="home-body">
+        <div style="margin-bottom:4px;">
+          <div class="home-title">무엇을 도와드릴까요?</div>
+          <div class="home-desc">이마기난스(T)-A조의<br/>쉽고 간편한 디지털 안내 서비스!</div>
+        </div>
 
-        <button class="big-btn btn-gray" style="flex: 0.5;" onclick="startFaq()">
-          <div class="btn-text">
-            <span class="btn-title" style="font-size: 22px;">자주 묻는 질문</span>
-          </div>
-          <span class="btn-icon">❓</span>
-        </button>
+        <div class="home-buttons">
+          <button class="home-btn" onclick="startUsageFlow()">
+            <div>
+              <div class="home-btn-main">모르는 전자기기 사용법 알아보기</div>
+              <div class="home-btn-sub">스마트폰, 키오스크, 밥솥 등<br/>다양한 기기 사용법을 안내합니다.</div>
+            </div>
+            <span class="home-btn-icon">📘</span>
+          </button>
+          <button class="home-btn secondary" onclick="startFindFlow()">
+            <div>
+              <div class="home-btn-main">필요한 전자기기 찾기</div>
+              <div class="home-btn-sub">"집이 너무 건조해요" 처럼 고민을 말하면<br/>어울리는 기기를 추천해 드립니다.</div>
+            </div>
+            <span class="home-btn-icon">🧭</span>
+          </button>
+        </div>
 
+        <div class="info-section">
+          <div class="info-row">
+            <div class="info-card" onclick="startFaqFlow()">
+              <div class="info-card-header">
+                <div class="info-card-title">자주 묻는 질문</div>
+                <div>❓</div>
+              </div>
+              <div class="info-card-text">와이파이, 글자 크기 등<br/>기본적인 질문 모음</div>
+            </div>
+            <div class="info-card" onclick="startPopularFlow()">
+              <div class="info-card-header">
+                <div class="info-card-title">많이 확인한 기능</div>
+                <div>⭐</div>
+              </div>
+              <div class="info-card-text">외부입력, 소리 키우기<br/>등 인기 기능</div>
+            </div>
+          </div>
+          <div class="info-card info-card-wide" style="border-color: rgba(239,68,68,0.5);" onclick="startEmergencyCall()">
+            <div class="info-card-header">
+              <div class="info-card-title" style="color:#f87171;">도움 요청 (손주와 연결)</div>
+              <div>🚨</div>
+            </div>
+            <div class="info-card-text">접속 중인 손자 역할과 바로 연결됩니다.</div>
+          </div>
+        </div>
+
+        <div class="voice-area">
+          <button class="voice-btn" onclick="startGlobalVoice()">🎤</button>
+          <div class="voice-label">말로 기능을 찾아보세요</div>
+        </div>
       </div>
     </div>
 
-    <div id="screen-list" class="screen">
-      <h2 id="list-title" style="margin-bottom: 20px; font-size: 26px;">목록</h2>
-      <div id="list-container">
-        </div>
+    <div id="screen-usage-category" class="screen">
+      <div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-home')">←</button><span class="page-title">어떤 기기인가요?</span></div><div class="list-container" id="list-category"></div>
+    </div>
+    <div id="screen-usage-brand" class="screen">
+      <div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-usage-category')">←</button><span class="page-title">기능 분류 선택</span></div><div class="list-container" id="list-brand"></div>
+    </div>
+    <div id="screen-usage-model" class="screen">
+      <div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-usage-brand')">←</button><span class="page-title">세부 기능 선택</span></div><div class="list-container" id="list-model"></div>
+    </div>
+    <div id="screen-usage-guide" class="screen">
+      <div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-usage-model')">←</button><span class="page-title">사용 방법 안내</span></div><div class="list-container" id="guide-content" style="padding-bottom:20px;"></div><button class="home-btn secondary" style="flex:0; margin-top:10px; padding:15px; justify-content:center;" onclick="goToScreen('screen-home')"><span style="font-weight:bold;">처음으로 돌아가기</span></button>
     </div>
 
-    <div id="screen-guide" class="screen">
-      <h2 id="guide-title" style="margin-bottom: 20px; color: #38bdf8;">사용법</h2>
-      <div id="guide-content">
-        </div>
-      <button class="big-btn btn-blue" style="flex:0; justify-content:center;" onclick="goHome()">
-        <span style="font-size:24px; font-weight:bold;">처음으로 돌아가기</span>
-      </button>
+    <div id="screen-find" class="screen">
+      <div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-home')">←</button><span class="page-title">기기 추천 받기</span></div><div class="chat-area" id="chat-box"></div><div class="chat-input-area"><button class="mic-btn idle" id="mic-btn" onclick="toggleMic()">🎤</button><input type="text" class="chat-input" id="chat-input" placeholder="직접 입력하거나 말하기..." /><button class="send-btn" onclick="sendMessage()">전송</button></div>
     </div>
 
-    <div id="screen-voice" class="screen">
-      <div class="voice-ui">
-        <div class="mic-circle" id="mic-icon" onclick="toggleMic()">🎤</div>
-        <h2 id="voice-msg" style="font-size: 28px;">눌러서 말씀하세요</h2>
-        <p style="color:#aaa; font-size: 20px;">"밥솥", "화면이 어두워" 등</p>
+    <div id="screen-faq" class="screen"><div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-home')">←</button><span class="page-title">자주 묻는 질문</span></div><div class="list-container" id="list-faq"></div></div>
+    <div id="screen-popular" class="screen"><div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-home')">←</button><span class="page-title">많이 확인한 기능</span></div><div class="list-container" id="list-popular"></div></div>
+
+    <div id="screen-emergency" class="screen">
+      <div class="call-ui">
+        <div class="camera-feed" id="camera-feed">[ 김손주 얼굴 ]<br/>연결되었습니다.</div>
+        <div class="call-avatar" id="video-avatar">🧑‍💻</div>
+        <div class="call-status" id="call-status">손주님 찾는 중...</div>
+        <div class="call-timer" id="call-timer">00:00</div>
+        <button class="hangup-btn" onclick="endCallAndFeedback()">📞</button>
+      </div>
+    </div>
+    
+    <div id="screen-feedback" class="screen center-layout">
+      <div class="feedback-ui">
+        <div class="feedback-input-ui" id="fb-input-ui">
+          <div style="font-size:20px; font-weight:700; margin-bottom:10px;">문제는 해결되셨나요?</div>
+          <div style="color:#cbd5f5; font-size:15px; line-height:1.4; margin-bottom:20px;">
+            방금 도와드린 손주님이<br/>얼만큼 친절했는지 평가해주세요.
+          </div>
+          <div class="stars-container" style="margin-bottom:30px;">
+            <span class="star filled" onclick="rateStar(1)">★</span>
+            <span class="star filled" onclick="rateStar(2)">★</span>
+            <span class="star filled" onclick="rateStar(3)">★</span>
+            <span class="star filled" onclick="rateStar(4)">★</span>
+            <span class="star filled" onclick="rateStar(5)">★</span>
+          </div>
+          <button class="feedback-btn" onclick="finishFeedback()">평가 완료</button>
+        </div>
         
-        <div class="chat-input-row">
-          <input type="text" class="big-input" id="chat-input" placeholder="직접 입력하기">
-          <button class="big-send-btn" onclick="sendChat()">검색</button>
+        <div class="thankyou-msg" id="fb-thankyou-msg">
+          이용해주셔서 감사합니다!
         </div>
       </div>
     </div>
 
-    <div id="screen-call" class="screen center-layout">
-      <div style="text-align: center;">
-        <div style="font-size: 100px; margin-bottom: 20px;">🧑‍💻</div>
-        <h2 style="font-size: 32px; margin-bottom: 10px;" id="call-status">연결 중...</h2>
-        <p style="font-size: 24px; color: #aaa; margin-bottom: 50px;" id="call-timer">00:00</p>
-        
-        <button class="big-btn btn-red" style="width: 100%; justify-content: center;" onclick="endCall()">
-          <span style="font-size: 28px; font-weight: bold;">통화 종료</span>
-        </button>
+    <div id="screen-grandchild-home" class="screen">
+      <div class="header-nav">
+        <button class="back-btn" onclick="goToScreen('screen-role')">◀</button>
+        <span class="page-title">손주 모드</span>
       </div>
-    </div>
-
-    <div id="screen-grandchild" class="screen">
-      <div class="gc-header">봉사자 대시보드</div>
-      
-      <div style="padding-top: 20px;">
-        <div class="gc-card" style="text-align: center;">
-          <div class="gc-title">현재 상태</div>
-          <div class="gc-stat" id="gc-status-text" style="color: #aaa;">대기 중지 (OFF)</div>
-          <div style="margin: 15px 0; font-size: 50px;" id="gc-icon">💤</div>
-          <p style="color: #888; font-size: 14px; margin-bottom: 15px;">도움 요청을 받으려면 시작하세요.</p>
+      <div class="gc-dashboard">
+        
+        <div id="gc-match-area" style="text-align:center; padding: 20px 0;">
           
-          <button class="match-btn btn-on" id="match-toggle-btn" onclick="toggleMatch()">봉사 대기 시작 (ON)</button>
+          <div id="gc-match-start">
+            <div style="font-size:40px; margin-bottom:10px;">🤝</div>
+            <div style="font-size:16px; font-weight:bold; margin-bottom:6px;">매칭 시작하기</div>
+            <div style="font-size:13px; color:#9ca3af; margin-bottom:16px;">
+              버튼을 누르면 도움이 필요한<br/>어르신과 연결을 기다립니다.
+            </div>
+            <button class="home-btn" style="background:#2563eb; justify-content:center; text-align:center; padding:12px;" onclick="toggleMatching(true)">
+              <span style="font-weight:bold;">매칭 시작 (ON)</span>
+            </button>
+          </div>
+
+          <div id="gc-match-radar" style="display:none;">
+            <div class="radar-scanner">
+              <div style="font-size:40px;">📡</div>
+            </div>
+            <div class="radar-status">매칭 대기 중...</div>
+            <div style="font-size:13px; color:#cbd5f5; margin-top:6px;">
+              도움이 필요한 어르신이 생기면<br/>자동으로 연결됩니다.
+            </div>
+            <button class="home-btn" style="background:#ef4444; margin-top:16px; padding:10px; min-height:40px; justify-content:center;" onclick="toggleMatching(false)">
+              <span style="font-size:14px; font-weight:bold;">매칭 종료 (OFF)</span>
+            </button>
+          </div>
+
         </div>
 
         <div class="gc-card">
-          <div class="gc-title">내 활동 내역</div>
-          <div style="margin-bottom: 10px; border-bottom: 1px solid #444; padding-bottom: 10px;">
-            <span style="color:#22c55e;">[해결]</span> 10분 전 - 키오스크 사용법
+          <div class="gc-card-title">
+            <span>내 활동 및 이벤트</span>
+            <span style="font-size:12px; background:#2563eb; padding:2px 8px; border-radius:99px;">Lv. 3</span>
           </div>
-          <div>
-            <span style="color:#22c55e;">[해결]</span> 어제 - 와이파이 연결
+          <div style="display:flex; justify-content:space-between; margin-top:4px;">
+            <div style="text-align:center;">
+              <div style="font-size:12px; color:#9ca3af;">이번 달 활동</div>
+              <div style="font-size:18px; font-weight:700; color:#fff;">5회</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:12px; color:#9ca3af;">내 평점</div>
+              <div style="font-size:18px; font-weight:700; color:#fbbf24;">4.9</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:12px; color:#9ca3af;">해결율</div>
+              <div style="font-size:18px; font-weight:700; color:#22c55e;">98%</div>
+            </div>
+          </div>
+          <div class="event-progress-bg">
+            <div class="event-progress-bar"></div>
+          </div>
+          <div class="event-text">
+            <span>☕ 스타벅스 쿠폰까지</span>
+            <span>3회 남음!</span>
+          </div>
+        </div>
+
+        <div class="gc-card">
+          <div class="gc-card-title">내가 도와드린 내역</div>
+          <div id="gc-log-list">
+            <div class="log-item">
+              <div class="log-header"><span>2024.11.20</span><span>완료</span></div>
+              <div class="log-content">박OO 어르신의 '키오스크 주문' 문의를 해결해 드렸습니다.</div>
+            </div>
+            <div class="log-item">
+              <div class="log-header"><span>2024.11.18</span><span>완료</span></div>
+              <div class="log-content">김OO 어르신과 15분간 말벗 봉사를 진행했습니다.</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="feedback-popup" class="feedback-overlay">
-      <h2 style="font-size: 30px; margin-bottom: 10px;">감사합니다!</h2>
-      <p style="font-size: 20px; color: #ccc;">학생이 친절했나요?</p>
-      <div class="star-row">⭐⭐⭐⭐⭐</div>
-      <button class="big-btn btn-blue" style="flex: 0; width: 200px; justify-content: center;" onclick="closeFeedback()">
-        확인
-      </button>
-    </div>
-
-    <div class="bottom-nav" id="bottom-nav" style="display:none;">
-      <button class="nav-btn home" onclick="goHome()">
-        <span class="nav-icon">🏠</span>
-        <span>처음으로</span>
-      </button>
-      <button class="nav-btn back" onclick="goBack()">
-        <span class="nav-icon">↩️</span>
-        <span>뒤로가기</span>
-      </button>
+    <div id="screen-voice-nav" class="screen">
+      <div class="header-nav"><button class="back-btn" onclick="goToScreen('screen-home')">✕</button><span class="page-title">검색 및 기능 찾기</span></div>
+      <div class="voice-nav-ui">
+        <div class="voice-nav-icon" id="voice-nav-icon">🎤</div>
+        <div><div class="voice-nav-text" id="voice-status-text">듣고 있습니다...</div><div class="voice-nav-sub" id="voice-sub-text">"카카오톡", "밥솥" 처럼<br/>궁금한 기기 이름을 말해보세요.</div></div>
+        <div class="chat-input-area" style="width:100%; margin-top:20px;"><input type="text" class="chat-input" id="voice-search-input" placeholder="직접 입력하세요..." /><button class="send-btn" onclick="handleGlobalSearch()">🔎</button></div>
+      </div>
     </div>
 
   </div>
 
   <script>
-    /* --- [데이터] --- */
-    const data = {
-      "밥솥": { icon: "🍚", steps: ["뚜껑을 열고 쌀을 넣으세요.", "뚜껑을 닫고 손잡이를 돌려 잠그세요.", "'취사' 버튼을 꾹 누르세요."] },
-      "세탁기": { icon: "👕", steps: ["빨래를 넣고 문을 닫으세요.", "세제통에 세제를 한 스푼 넣으세요.", "전원을 켜고 동작 버튼을 누르세요."] },
-      "스마트폰": { icon: "📱", steps: ["설정(톱니바퀴)을 누르세요.", "디스플레이를 찾으세요.", "글자 크기를 크게 조절하세요."] },
-      "키오스크": { icon: "🍔", steps: ["화면을 손으로 터치하세요.", "먹고 갈지 포장할지 고르세요.", "카드 구멍에 카드를 꽂으세요."] }
+    // --- [데이터 정의] ---
+    const applianceData = {
+      "smartphone": { 
+        name: "스마트폰 기초", icon: "📱", brands: ["기본 설정", "카카오톡", "유튜브"], models: ["글자 크기 조절", "벨소리 변경", "사진 전송", "영상 보기"],
+        guide: [{text:"설정(톱니바퀴) 아이콘을 찾아 누르세요.", img:"⚙️"}, {text:"'디스플레이' 또는 '화면' 메뉴를 누르세요.", img:"🔆"}, {text:"'글자 크기와 스타일'을 눌러 조절하세요.", img:"🔠"}]
+      },
+      "kiosk": { name: "키오스크 (무인주문)", icon: "🍔", brands: ["카페", "햄버거 가게", "식당"], models: ["매장에서 먹기", "포장하기"], guide: [{text:"화면을 한 번 터치하세요.", img:"👆"}, {text:"'매장에서 식사' 또는 '포장하기'를 고르세요.", img:"🥡"}] },
+      "ricecooker": { name: "전기 밥솥", icon: "🍚", brands: ["쿠쿠", "쿠첸"], models: ["백미 취사", "잡곡 취사"], guide: [{text:"쌀을 씻어 내솥에 넣고 뚜껑을 잠그세요.", img:"🔒"}, {text:"'취사' 버튼을 꾹 누르세요.", img:"🔥"}] },
+      "airfryer": { name: "에어프라이어", icon: "🍤", brands: ["필립스", "노브랜드"], models: ["감자튀김", "치킨 데우기"], guide: [{text:"음식을 겹치지 않게 넣으세요.", img:"🧺"}, {text:"온도 180도, 시간 10분에 맞추세요.", img:"⏰"}] },
+      "microwave": { name: "전자레인지", icon: "🍱", brands: ["삼성전자", "LG전자"], models: ["버튼식", "다이얼식"], guide: [{text:"음식을 넣으세요.", img:"🚪"}, {text:"시작 버튼을 누르세요.", img:"▶️"}] },
+      "washing": { name: "세탁기", icon: "👕", brands: ["삼성전자", "LG전자"], models: ["표준 세탁", "이불 빨래"], guide: [{text:"빨래와 세제를 넣으세요.", img:"🧺"}, {text:"동작 버튼을 누르세요.", img:"▶️"}] },
+      "tv": { name: "TV", icon: "📺", brands: ["삼성전자", "LG전자"], models: ["전원 켜기", "외부입력"], guide: [{text:"빨간 전원 버튼을 누르세요.", img:"🔴"}, {text:"외부입력 버튼을 누르세요.", img:"📺"}] },
+      "ac": { name: "에어컨", icon: "❄️", brands: ["삼성전자", "LG전자"], models: ["스탠드형"], guide: [{text:"전원을 누르세요.", img:"📱"}, {text:"온도를 낮추세요.", img:"🌡️"}] }
     };
-    const faq = [
-      {t: "와이파이가 안 돼요", d: "공유기 코드를 뺐다가 다시 꽂아보세요."},
-      {t: "소리가 너무 작아요", d: "기계 옆면에 있는 버튼을 위로 누르세요."}
-    ];
+    const faqData = [{ q: "글자 크기가 작아요", a: "스마트폰 기초 > 기본 설정 확인하세요." }, { q: "와이파이 안 돼요", a: "상단바의 파란색 아이콘을 확인하세요." }];
+    const popularData = [{ title: "TV 외부입력 바꾸기", desc: "화면이 안 나올 때" }, { title: "카카오톡 사진 보내기", desc: "손주에게 사진 전송" }];
+    let currentCategory, currentBrand, currentModel, isRecording = false, callTimerIntv;
+    let currentRating = 5; // 현재 별점 (기본 5점)
 
-    /* --- [상태 변수] --- */
-    let historyStack = []; // 뒤로가기를 위한 스택
-    let isMatching = false; // 손주 매칭 상태
-    let callTimer;
-
-    /* --- [핵심 네비게이션 함수] --- */
-    function showScreen(id) {
-      // 1. 모든 화면 숨김
+    // --- [공통] ---
+    function goToScreen(screenId) {
       document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-      // 2. 해당 화면 표시
-      document.getElementById(id).classList.add('active');
-      
-      // 3. 내비게이션 바 처리
-      const nav = document.getElementById('bottom-nav');
-      if (id === 'screen-role') {
-        nav.style.display = 'none'; // 역할 선택에선 숨김
-        historyStack = []; // 기록 초기화
-      } else {
-        nav.style.display = 'flex';
-        // 스택 관리는 goBack에서 처리
-      }
+      const target = document.getElementById(screenId);
+      if (target) target.classList.add('active');
     }
+    window.addEventListener('load', () => {
+      setTimeout(() => goToScreen('screen-role'), 2500);
+      new MutationObserver((m) => { m.forEach((x) => { if(x.target.id==='screen-loading2' && x.target.classList.contains('active')) setTimeout(()=>goToScreen('screen-home'),2000); })}).observe(document.getElementById('screen-loading2'), {attributes:true});
+    });
 
-    function setMode(mode) {
-      if(mode === 'grandparent') {
-        document.getElementById('header-mode-text').innerText = "어르신 모드";
-        showScreen('screen-home');
-        historyStack.push('screen-home');
-      } else {
-        document.getElementById('header-mode-text').innerText = "손주(봉사자) 모드";
-        showScreen('screen-grandchild');
-        historyStack.push('screen-grandchild');
-      }
+    // --- [사용법] ---
+    function startUsageFlow() { const l=document.getElementById('list-category'); l.innerHTML=''; Object.keys(applianceData).forEach(k=>{ const i=applianceData[k]; l.innerHTML+=`<div class="list-item" onclick="currentCategory='${k}';showBrandList()"><span class="list-text">${i.name}</span><span style="font-size:24px;">${i.icon}</span></div>`; }); goToScreen('screen-usage-category'); }
+    function showBrandList() { const l=document.getElementById('list-brand'); l.innerHTML=''; applianceData[currentCategory].brands.forEach(b=>{ l.innerHTML+=`<div class="list-item" onclick="currentBrand='${b}';showModelList()"><span class="list-text">${b}</span><span style="font-size:24px;">📁</span></div>`; }); goToScreen('screen-usage-brand'); }
+    function showModelList() { const l=document.getElementById('list-model'); l.innerHTML=''; applianceData[currentCategory].models.forEach(m=>{ l.innerHTML+=`<div class="list-item" onclick="currentModel='${m}';showGuide()"><span class="list-text">${m}</span><span style="font-size:24px;">⚙️</span></div>`; }); goToScreen('screen-usage-model'); }
+    function showGuide() { const c=document.getElementById('guide-content'); c.innerHTML=`<div style="margin-bottom:10px; color:#38bdf8;">${applianceData[currentCategory].name} > ${currentModel}</div>`; applianceData[currentCategory].guide.forEach((s,i)=>{ c.innerHTML+=`<div class="guide-step"><div class="step-num">STEP ${i+1}</div><div class="step-content">${s.text}</div><div class="step-img-box">${s.img}</div></div>`; }); goToScreen('screen-usage-guide'); }
+
+    // --- [기기 찾기] ---
+    function startFindFlow() { document.getElementById('chat-box').innerHTML=`<div class="message msg-ai">어떤 점이 불편하신가요?</div>`; document.getElementById('chat-input').value=""; goToScreen('screen-find'); }
+    function toggleMic() { const b=document.getElementById('mic-btn'), i=document.getElementById('chat-input'); if(!isRecording){ isRecording=true; b.classList.remove('idle'); b.innerHTML="⏹"; i.placeholder="듣는 중..."; setTimeout(()=>{ if(isRecording){ i.value="청소가 힘들어"; toggleMic(); sendMessage(); } },2500); } else { isRecording=false; b.classList.add('idle'); b.innerHTML="🎤"; i.placeholder="입력 또는 말하기..."; } }
+    function sendMessage() { const i=document.getElementById('chat-input'), t=i.value.trim(), c=document.getElementById('chat-box'); if(!t)return; c.innerHTML+=`<div class="message msg-user">${t}</div>`; i.value=""; c.scrollTop=c.scrollHeight; setTimeout(()=>{ let r="이해하지 못했어요.", rec=null; if(t.includes("청소")){r="로봇 청소기를 추천해요."; rec={t:"효도 로봇 청소기",d:"물걸레 겸용"};} else if(t.includes("건조")){r="가습기를 추천해요."; rec={t:"대용량 가습기",d:"세척 간편"};} c.innerHTML+=`<div class="message msg-ai">${r}</div>`; if(rec)c.innerHTML+=`<div class="result-card"><div class="result-title">추천: ${rec.t}</div><div class="result-desc">${rec.d}</div><button class="buy-btn">판매점 보기</button></div>`; c.scrollTop=c.scrollHeight; },800); }
+
+    // --- [음성/검색] ---
+    function startGlobalVoice() { goToScreen('screen-voice-nav'); document.getElementById('voice-status-text').innerText="듣고 있습니다..."; document.getElementById('voice-search-input').value=""; setTimeout(()=>{ document.getElementById('voice-status-text').innerText="말씀해주세요."; document.getElementById('voice-search-input').placeholder="듣기 대기 중..."; },2500); }
+    function handleGlobalSearch() { const inp=document.getElementById('voice-search-input').value.trim(); if(!inp)return; let fk=null; Object.keys(applianceData).forEach(k=>{ const d=applianceData[k]; if(d.name.includes(inp)||d.brands.some(b=>b.includes(inp))||d.models.some(m=>m.includes(inp))||(inp.includes("카톡")&&k==="smartphone")||(inp.includes("밥")&&k==="ricecooker")) fk=k; }); if(fk){ alert(`'${inp}' 관련 메뉴로 이동합니다.`); currentCategory=fk; showBrandList(); } else { alert("결과를 찾지 못했습니다."); } }
+
+    // --- [서브] ---
+    function startFaqFlow() { const l=document.getElementById('list-faq'); l.innerHTML=''; faqData.forEach(i=>{ l.innerHTML+=`<div class="list-item"><div style="display:flex; flex-direction:column; gap:6px;"><span class="list-text" style="font-size:16px;">Q. ${i.q}</span><span style="font-size:14px; color:#9ca3af;">A. ${i.a}</span></div></div>`; }); goToScreen('screen-faq'); }
+    function startPopularFlow() { const l=document.getElementById('list-popular'); l.innerHTML=''; popularData.forEach(i=>{ l.innerHTML+=`<div class="list-item"><div style="display:flex; flex-direction:column; gap:6px;"><span class="list-text" style="font-size:16px;">${i.title}</span><span style="font-size:14px; color:#9ca3af;">${i.desc}</span></div></div>`; }); goToScreen('screen-popular'); }
+
+    // --- [긴급 도움 (Azar 매칭)] ---
+    function startEmergencyCall() { 
+      goToScreen('screen-emergency'); 
+      document.getElementById('call-status').innerText="봉사자 찾는 중..."; 
+      document.getElementById('call-timer').innerText="00:00"; 
+      document.getElementById('camera-feed').classList.remove('connected'); 
+      document.getElementById('video-avatar').style.display="flex"; 
+      setTimeout(()=>{ 
+        document.getElementById('call-status').innerText="김손주 학생 (연결됨)"; 
+        document.getElementById('camera-feed').classList.add('connected'); 
+        document.getElementById('video-avatar').style.display="none"; 
+        let s=0; clearInterval(callTimerIntv); 
+        callTimerIntv=setInterval(()=>{ s++; let m=Math.floor(s/60), sec=s%60; document.getElementById('call-timer').innerText=`${m<10?'0'+m:m}:${sec<10?'0'+sec:sec}`; },1000); 
+      },2000); 
     }
+    function endCallAndFeedback() { clearInterval(callTimerIntv); goToScreen('screen-feedback'); resetFeedbackUI(); }
 
-    function goHome() {
-      // 현재 모드에 따라 홈이 다름
-      const currentMode = document.getElementById('header-mode-text').innerText;
-      if (currentMode.includes("어르신")) {
-        showScreen('screen-home');
-        historyStack = ['screen-home'];
-      } else {
-        showScreen('screen-grandchild');
-        historyStack = ['screen-grandchild'];
-      }
-    }
-
-    function goBack() {
-      if (historyStack.length > 1) {
-        historyStack.pop(); // 현재 화면 제거
-        const prev = historyStack[historyStack.length - 1];
-        showScreen(prev);
-      } else {
-        // 더 뒤로 갈 곳이 없으면 역할 선택으로
-        showScreen('screen-role');
-      }
-    }
-
-    function pushHistory(id) {
-      showScreen(id);
-      historyStack.push(id);
-    }
-
-    /* --- [기능 1: 사용법 공부] --- */
-    function startUsageFlow() {
-      const con = document.getElementById('list-container');
-      document.getElementById('list-title').innerText = "어떤 기계인가요?";
-      con.innerHTML = '';
-      
-      Object.keys(data).forEach(key => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `<span>${key}</span><span>${data[key].icon}</span>`;
-        div.onclick = () => showGuide(key);
-        con.appendChild(div);
+    // --- [NEW: 별점 평가 로직] ---
+    function rateStar(score) {
+      currentRating = score;
+      const stars = document.querySelectorAll('.feedback-ui .star');
+      stars.forEach((star, index) => {
+        if (index < score) {
+          star.classList.add('filled'); star.innerText = '★';
+        } else {
+          star.classList.remove('filled'); star.innerText = '☆';
+        }
       });
-      pushHistory('screen-list');
     }
 
-    function showGuide(key) {
-      const item = data[key];
-      const con = document.getElementById('guide-content');
-      document.getElementById('guide-title').innerText = key + " 사용법";
-      con.innerHTML = '';
-
-      item.steps.forEach((step, idx) => {
-        con.innerHTML += `
-          <div class="guide-box">
-            <div class="guide-step-num">${idx + 1}단계</div>
-            <div class="guide-text">${step}</div>
-          </div>
-        `;
-      });
-      pushHistory('screen-guide');
-    }
-
-    function startFaq() {
-      const con = document.getElementById('list-container');
-      document.getElementById('list-title').innerText = "자주 묻는 질문";
-      con.innerHTML = '';
-      faq.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.style.display = 'block';
-        div.innerHTML = `<div style="font-size:20px; color:#38bdf8; margin-bottom:5px;">Q. ${item.t}</div><div style="font-size:18px; color:#ddd; font-weight:normal;">A. ${item.d}</div>`;
-        con.appendChild(div);
-      });
-      pushHistory('screen-list');
-    }
-
-    /* --- [기능 2: 음성 검색] --- */
-    function startVoiceSearch() {
-      pushHistory('screen-voice');
-      document.getElementById('voice-msg').innerText = "눌러서 말씀하세요";
-    }
-
-    function toggleMic() {
-      const msg = document.getElementById('voice-msg');
-      const mic = document.getElementById('mic-icon');
-      msg.innerText = "듣고 있습니다...";
-      mic.style.background = "#dc2626"; // 빨간색 (녹음중)
+    function finishFeedback() {
+      const inputUI = document.getElementById('fb-input-ui');
+      const msgUI = document.getElementById('fb-thankyou-msg');
       
+      // 1. 입력 UI 숨기고, 감사 메시지 표시
+      inputUI.style.opacity = '0';
+      msgUI.style.opacity = '1';
+
+      // 2. 2초 후 감사 메시지 숨기고 홈으로 이동
       setTimeout(() => {
-        msg.innerText = "확인했습니다!";
-        mic.style.background = "#16a34a"; // 원복
-        // 자동 이동 시뮬레이션
-        document.getElementById('chat-input').value = "밥솥";
-        sendChat();
+        msgUI.style.opacity = '0';
+        setTimeout(() => {
+          goToScreen('screen-home');
+          resetFeedbackUI(); // 다음 사용을 위해 초기화
+        }, 500); // CSS transition 시간과 맞춤
       }, 2000);
     }
 
-    function sendChat() {
-      const val = document.getElementById('chat-input').value;
-      if (val.includes("밥")) showGuide("밥솥");
-      else if (val.includes("세탁")) showGuide("세탁기");
-      else if (val.includes("폰") || val.includes("글자")) showGuide("스마트폰");
-      else if (val.includes("주문") || val.includes("키오스크")) showGuide("키오스크");
-      else alert("죄송해요. 아직 배우고 있는 중이에요.");
+    // 피드백 UI 초기화 함수
+    function resetFeedbackUI() {
+      document.getElementById('fb-input-ui').style.opacity = '1';
+      document.getElementById('fb-thankyou-msg').style.opacity = '0';
+      rateStar(5); // 별점 5점으로 초기화
     }
 
-    /* --- [기능 3: 긴급 호출 (Azar 스타일)] --- */
-    function startEmergencyCall() {
-      pushHistory('screen-call');
-      const status = document.getElementById('call-status');
-      const timer = document.getElementById('call-timer');
-      
-      status.innerText = "봉사자 찾는 중...";
-      timer.innerText = "잠시만 기다려주세요";
-
-      setTimeout(() => {
-        status.innerText = "김철수 학생 (연결됨)";
-        let sec = 0;
-        clearInterval(callTimer);
-        callTimer = setInterval(() => {
-          sec++;
-          timer.innerText = "통화 시간 : " + sec + "초";
-        }, 1000);
-      }, 2000);
-    }
-
-    function endCall() {
-      clearInterval(callTimer);
-      // 평가 팝업 띄우기
-      document.getElementById('feedback-popup').classList.add('show');
-    }
-
-    function closeFeedback() {
-      document.getElementById('feedback-popup').classList.remove('show');
-      goHome();
-    }
-
-    /* --- [손주 모드 로직] --- */
-    function toggleMatch() {
-      const btn = document.getElementById('match-toggle-btn');
-      const stat = document.getElementById('gc-status-text');
-      const icon = document.getElementById('gc-icon');
-
-      isMatching = !isMatching;
-
-      if (isMatching) {
-        btn.innerText = "대기 종료 (OFF)";
-        btn.className = "match-btn btn-off";
-        stat.innerText = "매칭 대기 중... (ON)";
-        stat.style.color = "#38bdf8";
-        icon.innerText = "📡"; // 레이더 아이콘
-      } else {
-        btn.innerText = "봉사 대기 시작 (ON)";
-        btn.className = "match-btn btn-on";
-        stat.innerText = "대기 중지 (OFF)";
-        stat.style.color = "#aaa";
-        icon.innerText = "💤";
-      }
+    // --- [손주 모드: 수동 매칭 토글] ---
+    function toggleMatching(isOn) {
+      const startDiv = document.getElementById('gc-match-start');
+      const radarDiv = document.getElementById('gc-match-radar');
+      if (isOn) { startDiv.style.display = 'none'; radarDiv.style.display = 'block'; } 
+      else { startDiv.style.display = 'block'; radarDiv.style.display = 'none'; }
     }
   </script>
 </body>
