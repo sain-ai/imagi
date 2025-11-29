@@ -39,7 +39,31 @@
       padding: 20px;
     }
 
-    /* =========== 스플래시 =========== */
+    /* =========== 공통 로더 애니메이션 =========== */
+    .loader {
+      width: 72px;
+      height: 72px;
+      transform: rotate(-90deg);
+    }
+    .loader circle {
+      fill: none;
+      stroke-width: 4;
+      stroke-linecap: round;
+    }
+    .loader-bg {
+      stroke: rgba(148,163,184,0.35);
+    }
+    .loader-progress {
+      stroke: #38bdf8;
+      stroke-dasharray: 188.4;
+      stroke-dashoffset: 188.4;
+      animation: progressFill 3s ease-out forwards;
+    }
+    @keyframes progressFill {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* =========== 스플래시(앱 처음) =========== */
     #splash {
       background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000 100%);
       text-align: center;
@@ -73,48 +97,36 @@
       color: #9ca3af;
       font-size: 11px;
     }
-    .loader {
-      width: 72px;
-      height: 72px;
-      transform: rotate(-90deg);
-    }
-    .loader circle {
-      fill: none;
-      stroke-width: 4;
-      stroke-linecap: round;
-    }
-    .loader-bg {
-      stroke: rgba(148,163,184,0.35);
-    }
-    .loader-progress {
-      stroke: #38bdf8;
-      stroke-dasharray: 188.4;
-      stroke-dashoffset: 188.4;
-      animation: progressFill 3s ease-out forwards;
-    }
-    @keyframes progressFill {
-      to { stroke-dashoffset: 0; }
-    }
 
     /* =========== 역할 선택 화면 =========== */
     #roleSelect {
-      background: linear-gradient(180deg, #020617 0, #020617 60%, #020617 100%);
+      background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
       display: none;
     }
     #roleSelect.visible { display: flex; }
 
     .role-wrapper {
       width: 100%;
-      padding: 24px 12px;
+      padding: 28px 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 18px;
+      gap: 20px;
+    }
+
+    .role-chip {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      color: #cbd5f5;
+      background: rgba(15,23,42,0.9);
     }
 
     .role-title {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 700;
+      text-align: center;
     }
 
     .role-desc {
@@ -125,30 +137,31 @@
     }
 
     .role-boxes {
-      margin-top: 4px;
+      margin-top: 8px;
       width: 100%;
       display: flex;
-      gap: 10px;
+      gap: 12px;
     }
 
     .role-card {
       flex: 1;
-      border-radius: 16px;
-      padding: 16px 10px;
-      background: linear-gradient(135deg, #0b1120 0, #111827 100%);
-      border: 1px solid rgba(148,163,184,0.5);
+      border-radius: 18px;
+      padding: 18px 10px;
+      background: linear-gradient(150deg, #020617 0, #020617 45%, #0f172a 100%);
+      border: 1px solid rgba(148,163,184,0.6);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       cursor: pointer;
       text-align: center;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.9);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
     }
 
-    .role-card.active {
-      background: linear-gradient(135deg, #1d4ed8 0, #38bdf8 100%);
-      border-color: #60a5fa;
+    .role-card-icon {
+      font-size: 26px;
     }
 
     .role-main {
@@ -160,6 +173,48 @@
       font-size: 11px;
       color: #e5e7eb;
       opacity: 0.9;
+      line-height: 1.4;
+    }
+
+    .role-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(15,23,42,0.95);
+      border-color: #60a5fa;
+    }
+
+    .role-card.active {
+      background: linear-gradient(145deg, #1d4ed8 0, #38bdf8 100%);
+      border-color: #93c5fd;
+    }
+    .role-card.active .role-sub {
+      opacity: 1;
+    }
+
+    .role-hint {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* =========== 두 번째 로딩(조부모 입장용) =========== */
+    #loading2 {
+      background: radial-gradient(circle at top, #020617 0, #020617 55%, #000 100%);
+      display: none;
+      text-align: center;
+      gap: 16px;
+    }
+    #loading2.visible { display: flex; }
+
+    .loading2-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .loading2-sub {
+      font-size: 12px;
+      color: #9ca3af;
+      line-height: 1.5;
     }
 
     /* =========== 메인 홈 화면 =========== */
@@ -300,7 +355,7 @@
 
     /* 음성 입력 버튼 */
     .voice-area {
-      margin-top: 290px; /* 네가 잡아둔 위치 그대로 */
+      margin-top: 290px; /* 네가 잡아둔 위치 */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -354,7 +409,7 @@
 </head>
 <body>
   <div class="phone">
-    <!-- 스플래시 화면 -->
+    <!-- 1. 스플래시 화면 -->
     <div id="splash" class="screen">
       <div>
         <div class="splash-title">PROJECT</div>
@@ -374,30 +429,63 @@
       </div>
     </div>
 
-    <!-- 역할 선택 화면 -->
+    <!-- 2. 역할 선택 화면 -->
     <div id="roleSelect" class="screen">
       <div class="role-wrapper">
+        <div class="role-chip">DigitalBridge · 모드 선택</div>
         <div class="role-title">누구로 이용하시나요?</div>
         <div class="role-desc">
           조부모님은 사용법 안내를,<br/>
-          손주는 도와주는 화면을 보게 됩니다.
+          손주는 그 모습을 도와주는 화면을 보게 됩니다.
         </div>
 
         <div class="role-boxes">
           <div class="role-card" id="roleGrandchild">
+            <div class="role-card-icon">🧑‍💻</div>
             <div class="role-main">손주 모드</div>
-            <div class="role-sub">조부모님을 도와주는 메뉴 (준비 중)</div>
+            <div class="role-sub">
+              조부모님께 필요한 기능을<br/>
+              대신 찾아보고 도와주는 화면<br/>
+              <span style="opacity:0.85;">(준비 중)</span>
+            </div>
           </div>
 
           <div class="role-card active" id="roleGrandparent">
+            <div class="role-card-icon">👵</div>
             <div class="role-main">조부모 모드</div>
-            <div class="role-sub">전자기기 사용법이 궁금하신 분</div>
+            <div class="role-sub">
+              전자기기 사용법이 궁금하시거나<br/>
+              어떤 기기가 필요할지 알고 싶은 분
+            </div>
           </div>
+        </div>
+
+        <div class="role-hint">
+          조부모 모드를 선택하면, 어르신을 위한 안내 화면으로 이동합니다.
         </div>
       </div>
     </div>
 
-    <!-- 메인 홈 화면 -->
+    <!-- 3. 두 번째 로딩(조부모 모드 입장 시) -->
+    <div id="loading2" class="screen">
+      <div>
+        <div class="loading2-title">조부모 모드를 준비하고 있어요</div>
+        <div class="loading2-sub">
+          어르신께 꼭 필요한 전자기기 사용 안내를<br/>
+          보기 좋게 정리하는 중입니다…
+        </div>
+      </div>
+
+      <div class="loader-wrapper">
+        <svg class="loader" viewBox="0 0 80 80">
+          <circle class="loader-bg" cx="40" cy="40" r="30" />
+          <circle class="loader-progress" cx="40" cy="40" r="30" />
+        </svg>
+        <span>잠시만 기다려 주세요</span>
+      </div>
+    </div>
+
+    <!-- 4. 메인 홈 화면 -->
     <div id="main" class="screen">
       <!-- 위쪽 상태바 느낌 -->
       <div class="status-bar">
@@ -470,31 +558,40 @@
   </div>
 
   <script>
-    // 3초 후 스플래시 → 역할 선택 화면 전환
+    const splash = document.getElementById("splash");
+    const roleSelect = document.getElementById("roleSelect");
+    const loading2 = document.getElementById("loading2");
+    const mainScreen = document.getElementById("main");
+
+    // 1) 앱 로드 후 3초 → 역할 선택 화면으로
     window.addEventListener("load", () => {
       setTimeout(() => {
-        document.getElementById("splash").style.display = "none";
-        document.getElementById("roleSelect").classList.add("visible");
+        splash.style.display = "none";
+        roleSelect.classList.add("visible");
       }, 3000);
     });
 
-    // 역할 선택: 손주/조부모
+    // 2) 역할 선택
     const roleGrandparent = document.getElementById("roleGrandparent");
     const roleGrandchild = document.getElementById("roleGrandchild");
-    const roleSelect = document.getElementById("roleSelect");
-    const mainScreen = document.getElementById("main");
 
     roleGrandparent.addEventListener("click", () => {
-      // 조부모 모드 선택 → 홈 화면으로
+      // 역할 선택 화면 감추고, 로딩2 보이기
       roleSelect.classList.remove("visible");
-      mainScreen.classList.add("visible");
+      loading2.classList.add("visible");
+
+      // 2초 후 메인 화면으로 전환
+      setTimeout(() => {
+        loading2.classList.remove("visible");
+        mainScreen.classList.add("visible");
+      }, 2000);
     });
 
     roleGrandchild.addEventListener("click", () => {
       alert("손주 모드는 준비 중입니다. 지금은 조부모 모드만 이용 가능합니다.");
     });
 
-    // 이후 실제 기능 연결은 나중에 구현용 (현재는 안내만)
+    // 3) 기능 버튼(나중에 실제 화면으로 연결 예정)
     document.getElementById("btnUsage").addEventListener("click", () => {
       alert("『모르는 전자기기 사용법 알아보기』 화면으로 이동 (추후 내용 채울 예정)");
     });
