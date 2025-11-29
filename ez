@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>DigitalBridge - 효도 모드</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+  <style>
+    /* --- [기본 설정] --- */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+      font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      color: #fff;
+    }
+    
+    /* 폰 프레임 */
+    .phone {
+      width: 100%;
+      max-width: 450px; /* 조금 더 넓게 */
+      height: 90vh;
+      max-height: 850px;
+      background: #121212; /* 완전 검정보다는 눈 편한 짙은 회색 */
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 4px solid #333;
+    }
+
+    /* --- [화면 공통] --- */
+    .screen {
+      flex: 1;
+      display: none; /* 기본 숨김 */
+      flex-direction: column;
+      padding: 20px;
+      padding-bottom: 90px; /* 하단 버튼 공간 확보 */
+      overflow-y: auto;
+    }
+    .screen.active { display: flex; }
+    
+    /* 스크롤바 숨김 (깔끔하게) */
+    ::-webkit-scrollbar { width: 0px; }
+
+    /* --- [상단 헤더] --- */
+    .top-header {
+      padding: 15px 20px;
+      background: #1f1f1f;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #333;
+    }
+    .app-title { font-size: 22px; font-weight: bold; color: #fff; }
+    .mode-badge {
+      background: #444; padding: 6px 12px; border-radius: 20px; font-size: 14px;
+    }
+
+    /* --- [하단 고정 내비게이션 (핵심!)] --- */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 80px;
+      background: #1f1f1f;
+      border-top: 2px solid #333;
+      display: flex;
+      z-index: 100;
+    }
+    .nav-btn {
+      flex: 1;
+      border: none;
+      background: none;
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+    .nav-btn:active { background: #333; }
+    .nav-btn.home { border-right: 1px solid #333; background: #222; }
+    .nav-btn.back { background: #222; }
+    .nav-icon { font-size: 24px; }
+
+    /* --- [메인 홈 버튼들 (초대형)] --- */
+    .big-menu-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      height: 100%;
+      justify-content: center;
+    }
+    .big-btn {
+      flex: 1;
+      border-radius: 25px;
+      border: none;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: transform 0.1s;
+    }
+    .big-btn:active { transform: scale(0.98); }
+    
+    /* 색상 구분 (신호등) */
+    .btn-blue { background: #2563eb; color: #fff; }
+    .btn-green { background: #16a34a; color: #fff; }
+    .btn-red { background: #dc2626; color: #fff; }
+    .btn-gray { background: #4b5563; color: #fff; } /* 자주 묻는 질문용 */
+
+    .btn-text {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .btn-title { font-size: 28px; font-weight: 800; line-height: 1.2; }
+    .btn-sub { font-size: 16px; opacity: 0.9; font-weight: normal; }
+    .btn-icon { font-size: 50px; opacity: 0.9; }
+
+    /* --- [목록 스타일 (큼직하게)] --- */
+    .list-item {
+      background: #2d2d2d;
+      padding: 30px 20px; /* 터치 영역 확대 */
+      margin-bottom: 15px;
+      border-radius: 15px;
+      font-size: 22px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #444;
+    }
+    .list-item:active { background: #2563eb; border-color: #2563eb; }
+
+    /* --- [단계별 가이드 (큼직하게)] --- */
+    .guide-box {
+      background: #2d2d2d;
+      padding: 25px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .guide-step-num { 
+      background: #2563eb; color: #fff; 
+      display: inline-block; padding: 5px 15px; 
+      border-radius: 20px; font-weight: bold; margin-bottom: 15px;
+    }
+    .guide-text { font-size: 22px; line-height: 1.5; margin-bottom: 15px; }
+    .guide-img { font-size: 80px; margin: 10px 0; }
+
+    /* --- [음성/채팅 화면] --- */
+    .voice-ui {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 30px;
+    }
+    .mic-circle {
+      width: 150px; height: 150px;
+      background: #16a34a;
+      border-radius: 50%;
+      display: flex; justify-content: center; align-items: center;
+      font-size: 70px;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); } 70% { box-shadow: 0 0 0 30px rgba(22, 163, 74, 0); } 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); } }
+    
+    .chat-input-row {
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .big-input {
+      flex: 1;
+      height: 60px;
+      border-radius: 15px;
+      border: 2px solid #555;
+      background: #000;
+      color: #fff;
+      font-size: 18px;
+      padding: 0 15px;
+    }
+    .big-send-btn {
+      width: 80px;
+      height: 60px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* --- [손주 모드 (대시보드)] --- */
+    /* 손주 모드는 조금 더 세련되고 정보 위주로 */
+    .gc-header { padding: 20px; font-size: 20px; font-weight: bold; border-bottom: 1px solid #333; }
+    .gc-card { background: #222; padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #444; }
+    .gc-title { font-size: 16px; color: #aaa; margin-bottom: 10px; }
+    .gc-stat { font-size: 24px; font-weight: bold; color: #fff; }
+    .match-btn {
+      width: 100%; padding: 20px; font-size: 20px; font-weight: bold; 
+      border-radius: 15px; border: none; cursor: pointer; margin-top: 10px;
+    }
+    .btn-on { background: #2563eb; color: white; }
+    .btn-off { background: #dc2626; color: white; }
+
+    /* --- [평가 팝업] --- */
+    .feedback-overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.9); z-index: 200;
+      display: none; flex-direction: column; justify-content: center; align-items: center;
+    }
+    .feedback-overlay.show { display: flex; }
+    .star-row { font-size: 50px; color: #fbbf24; margin: 20px 0; }
+
+  </style>
+</head>
+<body>
+
+  <div class="phone">
+    
+    <div class="top-header">
+      <div class="app-title">디지털 브릿지</div>
+      <div class="mode-badge" id="header-mode-text">어르신 모드</div>
+    </div>
+
+    <div id="screen-role" class="screen active" style="padding-bottom: 20px;">
+      <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
+        <h2 style="font-size: 28px; margin-bottom: 10px;">누구신가요?</h2>
+        <p style="color: #aaa; font-size: 18px;">사용하실 분을 선택해주세요.</p>
+      </div>
+      
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <button class="big-btn btn-blue" style="height: 150px;" onclick="setMode('grandparent')">
+          <div class="btn-text">
+            <span class="btn-title">어르신</span>
+            <span class="btn-sub">사용법 배우기 / 도움 요청</span>
+          </div>
+          <span class="btn-icon">👵</span>
+        </button>
+
+        <button class="big-btn btn-gray" style="height: 150px;" onclick="setMode('grandchild')">
+          <div class="btn-text">
+            <span class="btn-title">손주 (봉사자)</span>
+            <span class="btn-sub">도와주러 왔어요</span>
+          </div>
+          <span class="btn-icon">🧑‍💻</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="screen-home" class="screen">
+      <div class="big-menu-container">
+        
+        <button class="big-btn btn-blue" onclick="startUsageFlow()">
+          <div class="btn-text">
+            <span class="btn-title">사용법 공부</span>
+            <span class="btn-sub">밥솥, 세탁기 등<br>사용법 보기</span>
+          </div>
+          <span class="btn-icon">📘</span>
+        </button>
+
+        <button class="big-btn btn-green" onclick="startVoiceSearch()">
+          <div class="btn-text">
+            <span class="btn-title">말로 찾기</span>
+            <span class="btn-sub">"카톡 글자 크게"<br>라고 말해보세요</span>
+          </div>
+          <span class="btn-icon">🎤</span>
+        </button>
+
+        <button class="big-btn btn-red" onclick="startEmergencyCall()">
+          <div class="btn-text">
+            <span class="btn-title">손주 부르기</span>
+            <span class="btn-sub">봉사자와 바로 연결<br>(긴급 도움)</span>
+          </div>
+          <span class="btn-icon">🚨</span>
+        </button>
+
+        <button class="big-btn btn-gray" style="flex: 0.5;" onclick="startFaq()">
+          <div class="btn-text">
+            <span class="btn-title" style="font-size: 22px;">자주 묻는 질문</span>
+          </div>
+          <span class="btn-icon">❓</span>
+        </button>
+
+      </div>
+    </div>
+
+    <div id="screen-list" class="screen">
+      <h2 id="list-title" style="margin-bottom: 20px; font-size: 26px;">목록</h2>
+      <div id="list-container">
+        </div>
+    </div>
+
+    <div id="screen-guide" class="screen">
+      <h2 id="guide-title" style="margin-bottom: 20px; color: #38bdf8;">사용법</h2>
+      <div id="guide-content">
+        </div>
+      <button class="big-btn btn-blue" style="flex:0; justify-content:center;" onclick="goHome()">
+        <span style="font-size:24px; font-weight:bold;">처음으로 돌아가기</span>
+      </button>
+    </div>
+
+    <div id="screen-voice" class="screen">
+      <div class="voice-ui">
+        <div class="mic-circle" id="mic-icon" onclick="toggleMic()">🎤</div>
+        <h2 id="voice-msg" style="font-size: 28px;">눌러서 말씀하세요</h2>
+        <p style="color:#aaa; font-size: 20px;">"밥솥", "화면이 어두워" 등</p>
+        
+        <div class="chat-input-row">
+          <input type="text" class="big-input" id="chat-input" placeholder="직접 입력하기">
+          <button class="big-send-btn" onclick="sendChat()">검색</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-call" class="screen center-layout">
+      <div style="text-align: center;">
+        <div style="font-size: 100px; margin-bottom: 20px;">🧑‍💻</div>
+        <h2 style="font-size: 32px; margin-bottom: 10px;" id="call-status">연결 중...</h2>
+        <p style="font-size: 24px; color: #aaa; margin-bottom: 50px;" id="call-timer">00:00</p>
+        
+        <button class="big-btn btn-red" style="width: 100%; justify-content: center;" onclick="endCall()">
+          <span style="font-size: 28px; font-weight: bold;">통화 종료</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="screen-grandchild" class="screen">
+      <div class="gc-header">봉사자 대시보드</div>
+      
+      <div style="padding-top: 20px;">
+        <div class="gc-card" style="text-align: center;">
+          <div class="gc-title">현재 상태</div>
+          <div class="gc-stat" id="gc-status-text" style="color: #aaa;">대기 중지 (OFF)</div>
+          <div style="margin: 15px 0; font-size: 50px;" id="gc-icon">💤</div>
+          <p style="color: #888; font-size: 14px; margin-bottom: 15px;">도움 요청을 받으려면 시작하세요.</p>
+          
+          <button class="match-btn btn-on" id="match-toggle-btn" onclick="toggleMatch()">봉사 대기 시작 (ON)</button>
+        </div>
+
+        <div class="gc-card">
+          <div class="gc-title">내 활동 내역</div>
+          <div style="margin-bottom: 10px; border-bottom: 1px solid #444; padding-bottom: 10px;">
+            <span style="color:#22c55e;">[해결]</span> 10분 전 - 키오스크 사용법
+          </div>
+          <div>
+            <span style="color:#22c55e;">[해결]</span> 어제 - 와이파이 연결
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="feedback-popup" class="feedback-overlay">
+      <h2 style="font-size: 30px; margin-bottom: 10px;">감사합니다!</h2>
+      <p style="font-size: 20px; color: #ccc;">학생이 친절했나요?</p>
+      <div class="star-row">⭐⭐⭐⭐⭐</div>
+      <button class="big-btn btn-blue" style="flex: 0; width: 200px; justify-content: center;" onclick="closeFeedback()">
+        확인
+      </button>
+    </div>
+
+    <div class="bottom-nav" id="bottom-nav" style="display:none;">
+      <button class="nav-btn home" onclick="goHome()">
+        <span class="nav-icon">🏠</span>
+        <span>처음으로</span>
+      </button>
+      <button class="nav-btn back" onclick="goBack()">
+        <span class="nav-icon">↩️</span>
+        <span>뒤로가기</span>
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    /* --- [데이터] --- */
+    const data = {
+      "밥솥": { icon: "🍚", steps: ["뚜껑을 열고 쌀을 넣으세요.", "뚜껑을 닫고 손잡이를 돌려 잠그세요.", "'취사' 버튼을 꾹 누르세요."] },
+      "세탁기": { icon: "👕", steps: ["빨래를 넣고 문을 닫으세요.", "세제통에 세제를 한 스푼 넣으세요.", "전원을 켜고 동작 버튼을 누르세요."] },
+      "스마트폰": { icon: "📱", steps: ["설정(톱니바퀴)을 누르세요.", "디스플레이를 찾으세요.", "글자 크기를 크게 조절하세요."] },
+      "키오스크": { icon: "🍔", steps: ["화면을 손으로 터치하세요.", "먹고 갈지 포장할지 고르세요.", "카드 구멍에 카드를 꽂으세요."] }
+    };
+    const faq = [
+      {t: "와이파이가 안 돼요", d: "공유기 코드를 뺐다가 다시 꽂아보세요."},
+      {t: "소리가 너무 작아요", d: "기계 옆면에 있는 버튼을 위로 누르세요."}
+    ];
+
+    /* --- [상태 변수] --- */
+    let historyStack = []; // 뒤로가기를 위한 스택
+    let isMatching = false; // 손주 매칭 상태
+    let callTimer;
+
+    /* --- [핵심 네비게이션 함수] --- */
+    function showScreen(id) {
+      // 1. 모든 화면 숨김
+      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+      // 2. 해당 화면 표시
+      document.getElementById(id).classList.add('active');
+      
+      // 3. 내비게이션 바 처리
+      const nav = document.getElementById('bottom-nav');
+      if (id === 'screen-role') {
+        nav.style.display = 'none'; // 역할 선택에선 숨김
+        historyStack = []; // 기록 초기화
+      } else {
+        nav.style.display = 'flex';
+        // 스택 관리는 goBack에서 처리
+      }
+    }
+
+    function setMode(mode) {
+      if(mode === 'grandparent') {
+        document.getElementById('header-mode-text').innerText = "어르신 모드";
+        showScreen('screen-home');
+        historyStack.push('screen-home');
+      } else {
+        document.getElementById('header-mode-text').innerText = "손주(봉사자) 모드";
+        showScreen('screen-grandchild');
+        historyStack.push('screen-grandchild');
+      }
+    }
+
+    function goHome() {
+      // 현재 모드에 따라 홈이 다름
+      const currentMode = document.getElementById('header-mode-text').innerText;
+      if (currentMode.includes("어르신")) {
+        showScreen('screen-home');
+        historyStack = ['screen-home'];
+      } else {
+        showScreen('screen-grandchild');
+        historyStack = ['screen-grandchild'];
+      }
+    }
+
+    function goBack() {
+      if (historyStack.length > 1) {
+        historyStack.pop(); // 현재 화면 제거
+        const prev = historyStack[historyStack.length - 1];
+        showScreen(prev);
+      } else {
+        // 더 뒤로 갈 곳이 없으면 역할 선택으로
+        showScreen('screen-role');
+      }
+    }
+
+    function pushHistory(id) {
+      showScreen(id);
+      historyStack.push(id);
+    }
+
+    /* --- [기능 1: 사용법 공부] --- */
+    function startUsageFlow() {
+      const con = document.getElementById('list-container');
+      document.getElementById('list-title').innerText = "어떤 기계인가요?";
+      con.innerHTML = '';
+      
+      Object.keys(data).forEach(key => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `<span>${key}</span><span>${data[key].icon}</span>`;
+        div.onclick = () => showGuide(key);
+        con.appendChild(div);
+      });
+      pushHistory('screen-list');
+    }
+
+    function showGuide(key) {
+      const item = data[key];
+      const con = document.getElementById('guide-content');
+      document.getElementById('guide-title').innerText = key + " 사용법";
+      con.innerHTML = '';
+
+      item.steps.forEach((step, idx) => {
+        con.innerHTML += `
+          <div class="guide-box">
+            <div class="guide-step-num">${idx + 1}단계</div>
+            <div class="guide-text">${step}</div>
+          </div>
+        `;
+      });
+      pushHistory('screen-guide');
+    }
+
+    function startFaq() {
+      const con = document.getElementById('list-container');
+      document.getElementById('list-title').innerText = "자주 묻는 질문";
+      con.innerHTML = '';
+      faq.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.style.display = 'block';
+        div.innerHTML = `<div style="font-size:20px; color:#38bdf8; margin-bottom:5px;">Q. ${item.t}</div><div style="font-size:18px; color:#ddd; font-weight:normal;">A. ${item.d}</div>`;
+        con.appendChild(div);
+      });
+      pushHistory('screen-list');
+    }
+
+    /* --- [기능 2: 음성 검색] --- */
+    function startVoiceSearch() {
+      pushHistory('screen-voice');
+      document.getElementById('voice-msg').innerText = "눌러서 말씀하세요";
+    }
+
+    function toggleMic() {
+      const msg = document.getElementById('voice-msg');
+      const mic = document.getElementById('mic-icon');
+      msg.innerText = "듣고 있습니다...";
+      mic.style.background = "#dc2626"; // 빨간색 (녹음중)
+      
+      setTimeout(() => {
+        msg.innerText = "확인했습니다!";
+        mic.style.background = "#16a34a"; // 원복
+        // 자동 이동 시뮬레이션
+        document.getElementById('chat-input').value = "밥솥";
+        sendChat();
+      }, 2000);
+    }
+
+    function sendChat() {
+      const val = document.getElementById('chat-input').value;
+      if (val.includes("밥")) showGuide("밥솥");
+      else if (val.includes("세탁")) showGuide("세탁기");
+      else if (val.includes("폰") || val.includes("글자")) showGuide("스마트폰");
+      else if (val.includes("주문") || val.includes("키오스크")) showGuide("키오스크");
+      else alert("죄송해요. 아직 배우고 있는 중이에요.");
+    }
+
+    /* --- [기능 3: 긴급 호출 (Azar 스타일)] --- */
+    function startEmergencyCall() {
+      pushHistory('screen-call');
+      const status = document.getElementById('call-status');
+      const timer = document.getElementById('call-timer');
+      
+      status.innerText = "봉사자 찾는 중...";
+      timer.innerText = "잠시만 기다려주세요";
+
+      setTimeout(() => {
+        status.innerText = "김철수 학생 (연결됨)";
+        let sec = 0;
+        clearInterval(callTimer);
+        callTimer = setInterval(() => {
+          sec++;
+          timer.innerText = "통화 시간 : " + sec + "초";
+        }, 1000);
+      }, 2000);
+    }
+
+    function endCall() {
+      clearInterval(callTimer);
+      // 평가 팝업 띄우기
+      document.getElementById('feedback-popup').classList.add('show');
+    }
+
+    function closeFeedback() {
+      document.getElementById('feedback-popup').classList.remove('show');
+      goHome();
+    }
+
+    /* --- [손주 모드 로직] --- */
+    function toggleMatch() {
+      const btn = document.getElementById('match-toggle-btn');
+      const stat = document.getElementById('gc-status-text');
+      const icon = document.getElementById('gc-icon');
+
+      isMatching = !isMatching;
+
+      if (isMatching) {
+        btn.innerText = "대기 종료 (OFF)";
+        btn.className = "match-btn btn-off";
+        stat.innerText = "매칭 대기 중... (ON)";
+        stat.style.color = "#38bdf8";
+        icon.innerText = "📡"; // 레이더 아이콘
+      } else {
+        btn.innerText = "봉사 대기 시작 (ON)";
+        btn.className = "match-btn btn-on";
+        stat.innerText = "대기 중지 (OFF)";
+        stat.style.color = "#aaa";
+        icon.innerText = "💤";
+      }
+    }
+  </script>
+</body>
+</html>
