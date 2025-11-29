@@ -14,25 +14,6 @@
       align-items: center;
       background: #111827;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" /><!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>PROJECT – DigitalBridge</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #111827;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     .phone {
@@ -57,7 +38,7 @@
       padding: 20px;
     }
 
-    /* 로더 */
+    /* 로더 등 기존 스타일 유지 */
     .loader {
       width: 72px;
       height: 72px;
@@ -121,6 +102,7 @@
 
     .role-wrapper {
       width: 100%;
+      height: 100%; /* 꽉 채우기 */
       padding: 28px 16px;
       display: flex;
       flex-direction: column;
@@ -149,6 +131,7 @@
     .role-boxes {
       margin-top: 8px;
       width: 100%;
+      flex: 1; /* 남은 공간 차지 */
       display: flex;
       gap: 12px;
     }
@@ -218,7 +201,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
     .header-left { display: flex; flex-direction: column; gap: 4px; }
     .app-name { font-size: 19px; font-weight: 700; }
@@ -231,1198 +214,43 @@
       background: rgba(15,23,42,0.85);
     }
 
+    /* [핵심 수정] Flex 비율로 꽉 채우기 */
     .home-body {
-      flex: 1;
+      flex: 1; /* 남은 화면 전체를 차지 */
       width: 100%;
       margin-top: 4px;
       background: rgba(15,23,42,0.96);
       border-radius: 20px;
       border: 1px solid rgba(31,41,55,0.85);
-      padding: 18px 16px 16px;
+      padding: 18px 16px 14px;
+      
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      gap: 14px;
+      gap: 14px; 
       position: relative;
+    }
+
+    .home-title-area {
+        /* 제목 영역은 고정 크기 */
+        margin-bottom: 4px;
     }
     .home-title { font-size: 16px; font-weight: 600; }
     .home-desc { font-size: 12px; color: #9ca3af; line-height: 1.5; }
 
+    /* 1) 상단 버튼 영역: 남은 공간의 일부를 차지하며 늘어남 */
     .home-buttons {
-      margin-top: 4px;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      flex: 1; /* 화면 비율 1 (공평하게 늘어남) */
     }
+
+    /* 버튼 자체도 높이를 100%로 설정해 부모 크기만큼 커짐 */
     .home-btn {
+      flex: 1; /* 버튼끼리도 높이를 나눠 가짐 */
       width: 100%;
       border-radius: 14px;
-      padding: 14px 14px;
-      border: none;
-      text-align: left;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: linear-gradient(135deg, #1e293b 0, #0f172a 100%);
-      color: #e5e7eb;
-      box-shadow: 0 8px 18px rgba(15,23,42,0.8);
-    }
-    .home-btn.secondary {
-      background: linear-gradient(135deg, #0b1120 0, #020617 100%);
-      box-shadow: 0 6px 14px rgba(15,23,42,0.6);
-    }
-    .home-btn-main { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-    .home-btn-sub { font-size: 11px; color: #9ca3af; }
-    .home-btn-icon { font-size: 20px; opacity: 0.9; }
-
-    /* 중간 카드 3개 */
-    .info-section {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-      margin-top: 6px;
-    }
-    .info-row {
-      display: flex;
-      gap: 10px;
-      width: 100%;
-    }
-    .info-card {
-      flex: 1;
-      padding: 14px 16px;
-      border-radius: 16px;
-      background: rgba(15,23,42,0.98);
-      border: 1px solid rgba(55,65,81,0.95);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 11px;
-      cursor: pointer;
-      transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease,
-        border-color 0.15s ease,
-        background 0.15s ease;
-      min-height: 80px;
-    }
-    .info-card-wide {
-      width: 100%;
-      min-height: 82px;
-    }
-    .info-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(15,23,42,0.9);
-      border-color: #60a5fa;
-      background: rgba(15,23,42,1);
-    }
-    .info-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .info-card-title {
-      font-weight: 600;
-      color: #e5e7eb;
-      font-size: 12px;
-    }
-    .info-card-text {
-      color: #9ca3af;
-      line-height: 1.4;
-    }
-
-    /* 음성 영역 */
-    .voice-area {
-      margin-top: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .voice-btn {
-      width: 68px;
-      height: 68px;
-      border-radius: 999px;
-      border: none;
-      background: radial-gradient(circle, #38bdf8 0, #1d4ed8 55%, #020617 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #f9fafb;
-      font-size: 26px;
-      box-shadow: 0 10px 24px rgba(59,130,246,0.7);
-      cursor: pointer;
-    }
-    .voice-label {
-      font-size: 11px;
-      color: #9ca3af;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  <div class="phone">
-    <!-- 1. 스플래시 -->
-    <div id="splash" class="screen">
-      <div>
-        <div class="splash-title">PROJECT</div>
-        <div class="brand">DigitalBridge</div>
-        <div class="splash-sub">
-          쉽고 간편한<br/>
-          생활 전자기기 사용 안내 서비스
-        </div>
-      </div>
-      <div class="loader-wrapper">
-        <svg class="loader" viewBox="0 0 80 80">
-          <circle class="loader-bg" cx="40" cy="40" r="30" />
-          <circle class="loader-progress" cx="40" cy="40" r="30" />
-        </svg>
-        <span>준비하는 중입니다…</span>
-      </div>
-    </div>
-
-    <!-- 2. 역할 선택 -->
-    <div id="roleSelect" class="screen">
-      <div class="role-wrapper">
-        <div class="role-chip">DigitalBridge · 모드 선택</div>
-        <div class="role-title">누구로 이용하시나요?</div>
-        <div class="role-desc">
-          조부모님은 사용법 안내를,<br/>
-          손주는 그 모습을 도와주는 화면을 보게 됩니다.
-        </div>
-
-        <div class="role-boxes">
-          <div class="role-card" id="roleGrandchild">
-            <div class="role-card-icon">🧑‍💻</div>
-            <div class="role-main">손주 모드</div>
-            <div class="role-sub">
-              조부모님께 필요한 기능을<br/>
-              대신 찾아보고 도와주는 화면<br/>
-              <span style="opacity:0.75;">(준비 중)</span>
-            </div>
-          </div>
-
-          <div class="role-card active" id="roleGrandparent">
-            <div class="role-card-icon">👵</div>
-            <div class="role-main">조부모 모드</div>
-            <div class="role-sub">
-              전자기기 사용법이 궁금하시거나<br/>
-              어떤 기기가 필요할지 알고 싶은 분
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. 두 번째 로딩 -->
-    <div id="loading2" class="screen">
-      <div>
-        <div class="loading2-title">조부모 모드를 준비하고 있어요</div>
-        <div class="loading2-sub">
-          어르신께 꼭 필요한 전자기기 사용 안내를<br/>
-          보기 좋게 정리하는 중입니다…
-        </div>
-      </div>
-
-      <div class="loader-wrapper">
-        <svg class="loader" viewBox="0 0 80 80">
-          <circle class="loader-bg" cx="40" cy="40" r="30" />
-          <circle class="loader-progress" cx="40" cy="40" r="30" />
-        </svg>
-        <span>잠시만 기다려 주세요</span>
-      </div>
-    </div>
-
-    <!-- 4. 메인 홈 -->
-    <div id="main" class="screen">
-      <!-- 상태바 -->
-      <div class="status-bar">
-        <div class="status-left">
-          <span class="signal-dot"></span>
-          <span>DigitalBridge</span>
-        </div>
-        <div class="status-right">
-          <span>안심 모드</span>
-        </div>
-      </div>
-
-      <!-- 헤더 -->
-      <div class="header">
-        <div class="header-left">
-          <div class="app-name">DigitalBridge - HOME</div>
-          <div class="app-sub">쉽고 간편한 전자기기 도우미</div>
-        </div>
-        <div class="header-badge">PROJECT · Beta</div>
-      </div>
-
-      <!-- 본문 -->
-      <div class="home-body">
-        <div>
-          <div class="home-title">무엇을 도와드릴까요?</div>
-          <div class="home-desc">
-            이마기난스(T)-A조의<br/>
-            쉽고 간편한 디지털 안내 서비스!
-          </div>
-        </div>
-
-        <!-- 상단 두 개 버튼 -->
-        <div class="home-buttons">
-          <button class="home-btn" id="btnUsage">
-            <div>
-              <div class="home-btn-main">모르는 전자기기 사용법 알아보기</div>
-              <div class="home-btn-sub">
-                TV, 세탁기, 에어컨, 전자레인지 등 지금 눈앞에 있는 기기 사용법을 단계별로 안내합니다.
-              </div>
-            </div>
-            <span class="home-btn-icon">📘</span>
-          </button>
-
-          <button class="home-btn secondary" id="btnFindDevice">
-            <div>
-              <div class="home-btn-main">필요한 전자기기 찾기</div>
-              <div class="home-btn-sub">
-                “집이 너무 건조해요”, “청소가 너무 힘들어요”처럼 고민을 말하면 어울리는 전자기기를 추천해 드립니다.
-              </div>
-            </div>
-            <span class="home-btn-icon">🧭</span>
-          </button>
-        </div>
-
-        <!-- 중간 카드 1,2,3 -->
-        <div class="info-section">
-          <div class="info-row">
-            <!-- 1번: 자주 묻는 질문 -->
-            <div class="info-card" id="cardFaq">
-              <div class="info-card-header">
-                <div class="info-card-title">자주 묻는 질문</div>
-                <div class="info-card-icon">❓</div>
-              </div>
-              <div class="info-card-text">
-                “TV 소리가 안 나와요”, “리모컨이 안 눌려요” 같은 질문을 한 번에 모아둔 메뉴입니다.
-              </div>
-            </div>
-
-            <!-- 2번: 오늘 많이 본 기능 -->
-            <div class="info-card" id="cardToday">
-              <div class="info-card-header">
-                <div class="info-card-title">오늘 많이 본 기능</div>
-                <div class="info-card-icon">⭐</div>
-              </div>
-              <div class="info-card-text">
-                다른 어르신들이 오늘 가장 많이 보신 전자기기 사용법을 보여드려요.
-              </div>
-            </div>
-          </div>
-
-          <!-- 3번: 긴급 도움 -->
-          <div class="info-card info-card-wide" id="cardEmergency">
-            <div class="info-card-header">
-              <div class="info-card-title">긴급 도움!</div>
-              <div class="info-card-icon">🚨</div>
-            </div>
-            <div class="info-card-text">
-              TV 화면이 안 나와요 / 인터넷이 끊겼어요 / 벨소리가 안 들릴 때
-              바로 따라 할 수 있는 응급 해결 방법을 안내합니다.
-            </div>
-          </div>
-        </div>
-
-        <!-- 음성 입력 -->
-        <div class="voice-area">
-          <button class="voice-btn" id="voiceBtn">🎤</button>
-          <div class="voice-label">
-            음성 버튼을 눌러 필요한 서비스를 물어보세요!
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const splash = document.getElementById("splash");
-    const roleSelect = document.getElementById("roleSelect");
-    const loading2 = document.getElementById("loading2");
-    const mainScreen = document.getElementById("main");
-
-    // 1) 앱 로드 후 3초 → 역할 선택 화면으로
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        splash.style.display = "none";
-        roleSelect.classList.add("visible");
-      }, 3000);
-    });
-
-    // 2) 역할 선택
-    const roleGrandparent = document.getElementById("roleGrandparent");
-    const roleGrandchild = document.getElementById("roleGrandchild");
-
-    roleGrandparent.addEventListener("click", () => {
-      roleSelect.classList.remove("visible");
-      loading2.classList.add("visible");
-
-      setTimeout(() => {
-        loading2.classList.remove("visible");
-        mainScreen.classList.add("visible");
-      }, 2000);
-    });
-
-    roleGrandchild.addEventListener("click", () => {
-      alert("손주 모드는 준비 중입니다. 지금은 조부모 모드만 이용 가능합니다.");
-    });
-
-    // 3) 상단 기능 버튼
-    document.getElementById("btnUsage").addEventListener("click", () => {
-      alert("『모르는 전자기기 사용법 알아보기』 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    document.getElementById("btnFindDevice").addEventListener("click", () => {
-      alert("『필요한 전자기기 찾기』 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    // 4) 중간 카드 클릭 이벤트
-    document.getElementById("cardFaq").addEventListener("click", () => {
-      alert("『자주 묻는 질문』 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    document.getElementById("cardToday").addEventListener("click", () => {
-      alert("『오늘 많이 본 기능』 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    document.getElementById("cardEmergency").addEventListener("click", () => {
-      alert("『긴급 도움』 상세 안내 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    // 5) 음성 버튼
-    document.getElementById("voiceBtn").addEventListener("click", () => {
-      alert("음성 입력 시작 (예: “밥솥 사용하는 법 알려줘”) – 나중에 음성인식 기능 연결");
-    });
-  </script>
-</body>
-</html>
-
-  <title>PROJECT – DigitalBridge</title><!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>PROJECT – DigitalBridge</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #111827;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    .phone {
-      width: 100%;
-      max-width: 420px;
-      aspect-ratio: 9 / 19.5;
-      background: #020617;
-      border-radius: 28px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-      color: #f9fafb;
-    }
-
-    .screen {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    /* 로더 */
-    .loader {
-      width: 72px;
-      height: 72px;
-      transform: rotate(-90deg);
-    }
-    .loader circle {
-      fill: none;
-      stroke-width: 4;
-      stroke-linecap: round;
-    }
-    .loader-bg { stroke: rgba(148,163,184,0.35); }
-    .loader-progress {
-      stroke: #38bdf8;
-      stroke-dasharray: 188.4;
-      stroke-dashoffset: 188.4;
-      animation: progressFill 3s ease-out forwards;
-    }
-    @keyframes progressFill {
-      to { stroke-dashoffset: 0; }
-    }
-
-    /* 1. 스플래시 */
-    #splash {
-      background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000 100%);
-      text-align: center;
-      gap: 18px;
-    }
-    .splash-title {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-    .brand {
-      font-size: 18px;
-      font-weight: 600;
-      margin-top: 4px;
-      color: #38bdf8;
-    }
-    .splash-sub {
-      font-size: 13px;
-      color: #cbd5f5;
-      margin-top: 6px;
-    }
-    .loader-wrapper {
-      margin-top: 18px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      color: #9ca3af;
-      font-size: 11px;
-    }
-
-    /* 2. 역할 선택 */
-    #roleSelect {
-      background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
-      display: none;
-    }
-    #roleSelect.visible { display: flex; }
-
-    .role-wrapper {
-      width: 100%;
-      padding: 28px 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-    .role-chip {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      color: #cbd5f5;
-      background: rgba(15,23,42,0.9);
-    }
-    .role-title {
-      font-size: 19px;
-      font-weight: 700;
-      text-align: center;
-    }
-    .role-desc {
-      font-size: 12px;
-      color: #9ca3af;
-      text-align: center;
-      line-height: 1.5;
-    }
-    .role-boxes {
-      margin-top: 8px;
-      width: 100%;
-      display: flex;
-      gap: 12px;
-    }
-    .role-card {
-      flex: 1;
-      border-radius: 18px;
-      padding: 18px 10px;
-      background: linear-gradient(150deg, #020617 0, #020617 45%, #0f172a 100%);
-      border: 1px solid rgba(148,163,184,0.6);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      text-align: center;
-      box-shadow: 0 10px 24px rgba(15,23,42,0.9);
-      transition: 0.18s ease;
-    }
-    .role-card-icon { font-size: 26px; }
-    .role-main { font-size: 15px; font-weight: 600; }
-    .role-sub { font-size: 11px; color: #e5e7eb; opacity: 0.9; line-height: 1.4; }
-    .role-card.active {
-      background: linear-gradient(145deg, #1d4ed8 0, #38bdf8 100%);
-      border-color: #93c5fd;
-    }
-
-    /* 3. 두 번째 로딩 */
-    #loading2 {
-      background: radial-gradient(circle at top, #020617 0, #020617 55%, #000 100%);
-      display: none;
-      text-align: center;
-      gap: 16px;
-    }
-    #loading2.visible { display: flex; }
-    .loading2-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
-    .loading2-sub { font-size: 12px; color: #9ca3af; }
-
-    /* 4. 메인 화면 */
-    #main {
-      background: linear-gradient(180deg, #0f172a 0, #020617 42%, #020617 100%);
-      padding: 18px 18px 24px;
-      display: none;
-    }
-    #main.visible { display: flex; }
-
-    .status-bar {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      color: #9ca3af;
-      opacity: 0.9;
-      margin-bottom: 6px;
-    }
-    .signal-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #22c55e;
-    }
-
-    .header {
-      width: 100%;
-      margin-top: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    .header-left { display: flex; flex-direction: column; gap: 4px; }
-    .app-name { font-size: 19px; font-weight: 700; }
-    .app-sub { font-size: 12px; color: #a5b4fc; }
-    .header-badge {
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      font-size: 11px;
-      background: rgba(15,23,42,0.85);
-    }
-
-    .home-body {
-      flex: 1;
-      width: 100%;
-      margin-top: 4px;
-      background: rgba(15,23,42,0.96);
-      border-radius: 20px;
-      border: 1px solid rgba(31,41,55,0.85);
-      padding: 18px 16px 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 14px;
-      position: relative;
-    }
-    .home-title { font-size: 16px; font-weight: 600; }
-    .home-desc { font-size: 12px; color: #9ca3af; line-height: 1.5; }
-
-    .home-buttons {
-      margin-top: 4px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .home-btn {
-      width: 100%;
-      border-radius: 14px;
-      padding: 14px 14px;
-      border: none;
-      text-align: left;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: linear-gradient(135deg, #1e293b 0, #0f172a 100%);
-      color: #e5e7eb;
-      box-shadow: 0 8px 18px rgba(15,23,42,0.8);
-    }
-    .home-btn.secondary {
-      background: linear-gradient(135deg, #0b1120 0, #020617 100%);
-      box-shadow: 0 6px 14px rgba(15,23,42,0.6);
-    }
-    .home-btn-main { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-    .home-btn-sub { font-size: 11px; color: #9ca3af; }
-    .home-btn-icon { font-size: 20px; opacity: 0.9; }
-
-    /* 중간 카드 3개 */
-    .info-section {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-      margin-top: 6px;
-    }
-    .info-row {
-      display: flex;
-      gap: 10px;
-      width: 100%;
-    }
-    .info-card {
-      flex: 1;
-      padding: 14px 16px;
-      border-radius: 16px;
-      background: rgba(15,23,42,0.98);
-      border: 1px solid rgba(55,65,81,0.95);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 11px;
-      cursor: pointer;
-      transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease,
-        border-color 0.15s ease,
-        background 0.15s ease;
-      min-height: 80px;
-    }
-    .info-card-wide {
-      width: 100%;
-      min-height: 82px;
-    }
-    .info-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(15,23,42,0.9);
-      border-color: #60a5fa;
-      background: rgba(15,23,42,1);
-    }
-    .info-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .info-card-title {
-      font-weight: 600;
-      color: #e5e7eb;
-      font-size: 12px;
-    }
-    .info-card-text {
-      color: #9ca3af;
-      line-height: 1.4;
-    }
-
-    /* 음성 영역 */
-    .voice-area {
-      margin-top: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .voice-btn {
-      width: 68px;
-      height: 68px;
-      border-radius: 999px;
-      border: none;
-      background: radial-gradient(circle, #38bdf8 0, #1d4ed8 55%, #020617 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #f9fafb;
-      font-size: 26px;
-      box-shadow: 0 10px 24px rgba(59,130,246,0.7);
-      cursor: pointer;
-    }
-    .voice-label {
-      font-size: 11px;
-      color: #9ca3af;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  <div class="phone">
-    <!-- 1. 스플래시 -->
-    <div id="splash" class="screen">
-      <div>
-        <div class="splash-title">PROJECT</div>
-        <div class="brand">DigitalBridge</div>
-        <div class="splash-sub">
-          쉽고 간편한<br/>
-          생활 전자기기 사용 안내 서비스
-        </div>
-      </div>
-      <div class="loader-wrapper">
-        <svg class="loader" viewBox="0 0 80 80">
-          <circle class="loader-bg" cx="40" cy="40" r="30" />
-          <circle class="loader-progress" cx="40" cy="40" r="30" />
-        </svg>
-        <span>준비하는 중입니다…</span>
-      </div>
-    </div>
-
-    <!-- 2. 역할 선택 -->
-    <div id="roleSelect" class="screen">
-      <div class="role-wrapper">
-        <div class="role-chip">DigitalBridge · 모드 선택</div>
-        <div class="role-title">누구로 이용하시나요?</div>
-        <div class="role-desc">
-          조부모님은 사용법 안내를,<br/>
-          손주는 그 모습을 도와주는 화면을 보게 됩니다.
-        </div>
-
-        <div class="role-boxes">
-          <div class="role-card" id="roleGrandchild">
-            <div class="role-card-icon">🧑‍💻</div>
-            <div class="role-main">손주 모드</div>
-            <div class="role-sub">
-              조부모님께 필요한 기능을<br/>
-              대신 찾아보고 도와주는 화면<br/>
-              <span style="opacity:0.75;">(준비 중)</span>
-            </div>
-          </div>
-
-          <div class="role-card active" id="roleGrandparent">
-            <div class="role-card-icon">👵</div>
-            <div class="role-main">조부모 모드</div>
-            <div class="role-sub">
-              전자기기 사용법이 궁금하시거나<br/>
-              어떤 기기가 필요할지 알고 싶은 분
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. 두 번째 로딩 -->
-    <div id="loading2" class="screen">
-      <div>
-        <div class="loading2-title">조부모 모드를 준비하고 있어요</div>
-        <div class="loading2-sub">
-          어르신께 꼭 필요한 전자기기 사용 안내를<br/>
-          보기 좋게 정리하는 중입니다…
-        </div>
-      </div>
-
-      <div class="loader-wrapper">
-        <svg class="loader" viewBox="0 0 80 80">
-          <circle class="loader-bg" cx="40" cy="40" r="30" />
-          <circle class="loader-progress" cx="40" cy="40" r="30" />
-        </svg>
-        <span>잠시만 기다려 주세요</span>
-      </div>
-    </div>
-
-    <!-- 4. 메인 홈 -->
-    <div id="main" class="screen">
-      <!-- 상태바 -->
-      <div class="status-bar">
-        <div class="status-left">
-          <span class="signal-dot"></span>
-          <span>DigitalBridge</span>
-        </div>
-        <div class="status-right">
-          <span>안심 모드</span>
-        </div>
-      </div>
-
-      <!-- 헤더 -->
-      <div class="header">
-        <div class="header-left">
-          <div class="app-name">DigitalBridge - HOME</div>
-          <div class="app-sub">쉽고 간편한 전자기기 도우미</div>
-        </div>
-        <div class="header-badge">PROJECT · Beta</div>
-      </div>
-
-      <!-- 본문 -->
-      <div class="home-body">
-        <div>
-          <div class="home-title">무엇을 도와드릴까요?</div>
-          <div class="home-desc">
-            이마기난스(T)-A조의<br/>
-            쉽고 간편한 디지털 안내 서비스!
-          </div>
-        </div>
-
-        <!-- 상단 두 개 버튼 -->
-        <div class="home-buttons">
-          <button class="home-btn" id="btnUsage">
-            <div>
-              <div class="home-btn-main">모르는 전자기기 사용법 알아보기</div>
-              <div class="home-btn-sub">
-                TV, 세탁기, 에어컨, 전자레인지 등 지금 눈앞에 있는 기기 사용법을 단계별로 안내합니다.
-              </div>
-            </div>
-            <span class="home-btn-icon">📘</span>
-          </button>
-
-          <button class="home-btn secondary" id="btnFindDevice">
-            <div>
-              <div class="home-btn-main">필요한 전자기기 찾기</div>
-              <div class="home-btn-sub">
-                “집이 너무 건조해요”, “청소가 너무 힘들어요”처럼 고민을 말하면 어울리는 전자기기를 추천해 드립니다.
-              </div>
-            </div>
-            <span class="home-btn-icon">🧭</span>
-          </button>
-        </div>
-
-        <!-- 중간 카드 1,2,3 -->
-        <div class="info-section">
-          <div class="info-row">
-            <!-- 1번: 자주 묻는 질문 -->
-            <div class="info-card" id="cardFaq">
-              <div class="info-card-header">
-                <div class="info-card-title">자주 묻는 질문</div>
-                <div class="info-card-icon">❓</div>
-              </div>
-              <div class="info-card-text">
-                “TV 소리가 안 나와요”, “리모컨이 안 눌려요” 같은 질문을 한 번에 모아둔 메뉴입니다.
-              </div>
-            </div>
-
-            <!-- 2번: 오늘 많이 본 기능 -->
-            <div class="info-card" id="cardToday">
-              <div class="info-card-header">
-                <div class="info-card-title">오늘 많이 본 기능</div>
-                <div class="info-card-icon">⭐</div>
-              </div>
-              <div class="info-card-text">
-                다른 어르신들이 오늘 가장 많이 보신 전자기기 사용법을 보여드려요.
-              </div>
-            </div>
-          </div>
-
-          <!-- 3번: 긴급 도움 -->
-          <div class="info-card info-card-wide" id="cardEmergency">
-            <div class="info-card-header">
-              <div class="info-card-title">긴급 도움!</div>
-              <div class="info-card-icon">🚨</div>
-            </div>
-            <div class="info-card-text">
-              TV 화면이 안 나와요 / 인터넷이 끊겼어요 / 벨소리가 안 들릴 때
-              바로 따라 할 수 있는 응급 해결 방법을 안내합니다.
-            </div>
-          </div>
-        </div>
-
-        <!-- 음성 입력 -->
-        <div class="voice-area">
-          <button class="voice-btn" id="voiceBtn">🎤</button>
-          <div class="voice-label">
-            음성 버튼을 눌러 필요한 서비스를 물어보세요!
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const splash = document.getElementById("splash");
-    const roleSelect = document.getElementById("roleSelect");
-    const loading2 = document.getElementById("loading2");
-    const mainScreen = document.getElementById("main");
-
-    // 1) 앱 로드 후 3초 → 역할 선택 화면으로
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        splash.style.display = "none";
-        roleSelect.classList.add("visible");
-      }, 3000);
-    });
-
-    // 2) 역할 선택
-    const roleGrandparent = document.getElementById("roleGrandparent");
-    const roleGrandchild = document.getElementById("roleGrandchild");
-
-    roleGrandparent.addEventListener("click", () => {
-      roleSelect.classList.remove("visible");
-      loading2.classList.add("visible");
-
-      setTimeout(() => {
-        loading2.classList.remove("visible");
-        mainScreen.classList.add("visible");
-      }, 2000);
-    });
-
-    roleGrandchild.addEventListener("click", () => {
-      alert("손주 모드는 준비 중입니다. 지금은 조부모 모드만 이용 가능합니다.");
-    });
-
-    // 3) 상단 기능 버튼
-    document.getElementById("btnUsage").addEventListener("click", () => {
-      alert("『모르는 전자기기 사용법 알아보기』 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    document.getElementById("btnFindDevice").addEventListener("click", () => {
-      alert("『필요한 전자기기 찾기』 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    // 4) 중간 카드 클릭 이벤트
-    document.getElementById("cardFaq").addEventListener("click", () => {
-      alert("『자주 묻는 질문』 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    document.getElementById("cardToday").addEventListener("click", () => {
-      alert("『오늘 많이 본 기능』 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    document.getElementById("cardEmergency").addEventListener("click", () => {
-      alert("『긴급 도움』 상세 안내 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    // 5) 음성 버튼
-    document.getElementById("voiceBtn").addEventListener("click", () => {
-      alert("음성 입력 시작 (예: “밥솥 사용하는 법 알려줘”) – 나중에 음성인식 기능 연결");
-    });
-  </script>
-</body>
-</html>
-
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #111827;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    .phone {
-      width: 100%;
-      max-width: 420px;
-      aspect-ratio: 9 / 19.5;
-      background: #020617;
-      border-radius: 28px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-      color: #f9fafb;
-    }
-
-    .screen {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    /* 로더 */
-    .loader {
-      width: 72px;
-      height: 72px;
-      transform: rotate(-90deg);
-    }
-    .loader circle {
-      fill: none;
-      stroke-width: 4;
-      stroke-linecap: round;
-    }
-    .loader-bg { stroke: rgba(148,163,184,0.35); }
-    .loader-progress {
-      stroke: #38bdf8;
-      stroke-dasharray: 188.4;
-      stroke-dashoffset: 188.4;
-      animation: progressFill 3s ease-out forwards;
-    }
-    @keyframes progressFill {
-      to { stroke-dashoffset: 0; }
-    }
-
-    /* 1. 스플래시 */
-    #splash {
-      background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000 100%);
-      text-align: center;
-      gap: 18px;
-    }
-    .splash-title {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-    .brand {
-      font-size: 18px;
-      font-weight: 600;
-      margin-top: 4px;
-      color: #38bdf8;
-    }
-    .splash-sub {
-      font-size: 13px;
-      color: #cbd5f5;
-      margin-top: 6px;
-    }
-    .loader-wrapper {
-      margin-top: 18px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      color: #9ca3af;
-      font-size: 11px;
-    }
-
-    /* 2. 역할 선택 */
-    #roleSelect {
-      background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
-      display: none;
-    }
-    #roleSelect.visible { display: flex; }
-
-    .role-wrapper {
-      width: 100%;
-      padding: 28px 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-    .role-chip {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      color: #cbd5f5;
-      background: rgba(15,23,42,0.9);
-    }
-    .role-title {
-      font-size: 19px;
-      font-weight: 700;
-      text-align: center;
-    }
-    .role-desc {
-      font-size: 12px;
-      color: #9ca3af;
-      text-align: center;
-      line-height: 1.5;
-    }
-    .role-boxes {
-      margin-top: 8px;
-      width: 100%;
-      display: flex;
-      gap: 12px;
-    }
-    .role-card {
-      flex: 1;
-      border-radius: 18px;
-      padding: 18px 10px;
-      background: linear-gradient(150deg, #020617 0, #020617 45%, #0f172a 100%);
-      border: 1px solid rgba(148,163,184,0.6);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      text-align: center;
-      box-shadow: 0 10px 24px rgba(15,23,42,0.9);
-      transition: 0.18s ease;
-    }
-    .role-card-icon { font-size: 26px; }
-    .role-main { font-size: 15px; font-weight: 600; }
-    .role-sub { font-size: 11px; color: #e5e7eb; opacity: 0.9; line-height: 1.4; }
-    .role-card.active {
-      background: linear-gradient(145deg, #1d4ed8 0, #38bdf8 100%);
-      border-color: #93c5fd;
-    }
-
-    /* 3. 두 번째 로딩 */
-    #loading2 {
-      background: radial-gradient(circle at top, #020617 0, #020617 55%, #000 100%);
-      display: none;
-      text-align: center;
-      gap: 16px;
-    }
-    #loading2.visible { display: flex; }
-    .loading2-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
-    .loading2-sub { font-size: 12px; color: #9ca3af; }
-
-    /* 4. 메인 화면 */
-    #main {
-      background: linear-gradient(180deg, #0f172a 0, #020617 42%, #020617 100%);
-      padding: 18px 18px 24px;
-      display: none;
-    }
-    #main.visible { display: flex; }
-
-    .status-bar {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      color: #9ca3af;
-      opacity: 0.9;
-      margin-bottom: 6px;
-    }
-    .signal-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #22c55e;
-    }
-
-    .header {
-      width: 100%;
-      margin-top: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    .header-left { display: flex; flex-direction: column; gap: 4px; }
-    .app-name { font-size: 19px; font-weight: 700; }
-    .app-sub { font-size: 12px; color: #a5b4fc; }
-    .header-badge {
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      font-size: 11px;
-      background: rgba(15,23,42,0.85);
-    }
-
-    /* --- [수정 포인트] --- */
-    /* 기존 레이아웃 방식(flex-start) 유지하되, gap과 패딩만 살짝 키움 */
-    .home-body {
-      flex: 1;
-      width: 100%;
-      margin-top: 4px;
-      background: rgba(15,23,42,0.96);
-      border-radius: 20px;
-      border: 1px solid rgba(31,41,55,0.85);
-      padding: 20px 16px; /* 위아래 패딩 약간 증가 */
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start; /* 기존 방식 유지 (위에서부터 차곡차곡) */
-      gap: 18px; /* 요소 간 간격을 14px -> 18px로 늘림 */
-      position: relative;
-    }
-    .home-title { font-size: 16px; font-weight: 600; }
-    .home-desc { font-size: 12px; color: #9ca3af; line-height: 1.5; }
-
-    .home-buttons {
-      margin-top: 4px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px; /* 버튼 사이 간격 약간 증가 */
-    }
-    .home-btn {
-      width: 100%;
-      border-radius: 14px;
-      padding: 20px 16px; /* 버튼 높이(패딩)를 키움 (14px -> 20px) */
+      padding: 0 16px; /* 높이는 flex로 조절되므로 상하 패딩은 0 또는 최소화 */
       border: none;
       text-align: left;
       cursor: pointer;
@@ -1442,594 +270,42 @@
     .home-btn-sub { font-size: 11px; color: #9ca3af; }
     .home-btn-icon { font-size: 20px; opacity: 0.9; }
 
-    /* 중간 카드 3개 */
-    .info-section {
-      display: flex;
-      flex-direction: column;
-      gap: 14px; /* 카드 줄 간격 증가 */
-      width: 100%;
-      margin-top: 8px;
-    }
-    .info-row {
-      display: flex;
-      gap: 12px;
-      width: 100%;
-    }
-    .info-card {
-      flex: 1;
-      padding: 16px; /* 카드 내부 여백 증가 */
-      border-radius: 16px;
-      background: rgba(15,23,42,0.98);
-      border: 1px solid rgba(55,65,81,0.95);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      min-height: 100px; /* 카드 최소 높이를 키움 (80px -> 100px) */
-      justify-content: center; /* 내용 수직 중앙 정렬 */
-    }
-    .info-card-wide {
-      width: 100%;
-      min-height: 100px; /* 긴급 도움 카드도 높이 키움 */
-    }
-    .info-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(15,23,42,0.9);
-      border-color: #60a5fa;
-      background: rgba(15,23,42,1);
-    }
-    .info-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .info-card-title {
-      font-weight: 600;
-      color: #e5e7eb;
-      font-size: 12px;
-    }
-    .info-card-text {
-      color: #9ca3af;
-      line-height: 1.4;
-    }
-
-    /* 음성 영역 */
-    .voice-area {
-      /* margin-top: auto; 를 쓰면 맨 아래로 붙지만, 
-         요소들이 커져서 자연스럽게 밀려 내려가도록 놔둡니다. */
-      margin-top: auto; 
-      padding-top: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .voice-btn {
-      width: 68px;
-      height: 68px;
-      border-radius: 999px;
-      border: none;
-      background: radial-gradient(circle, #38bdf8 0, #1d4ed8 55%, #020617 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #f9fafb;
-      font-size: 26px;
-      box-shadow: 0 10px 24px rgba(59,130,246,0.7);
-      cursor: pointer;
-    }
-    .voice-label {
-      font-size: 11px;
-      color: #9ca3af;
-      text-align: center;
-    }
-  </style>
-</head>
-<body>
-  <div class="phone">
-    <div id="splash" class="screen">
-      <div>
-        <div class="splash-title">PROJECT</div>
-        <div class="brand">DigitalBridge</div>
-        <div class="splash-sub">
-          쉽고 간편한<br/>
-          생활 전자기기 사용 안내 서비스
-        </div>
-      </div>
-      <div class="loader-wrapper">
-        <svg class="loader" viewBox="0 0 80 80">
-          <circle class="loader-bg" cx="40" cy="40" r="30" />
-          <circle class="loader-progress" cx="40" cy="40" r="30" />
-        </svg>
-        <span>준비하는 중입니다…</span>
-      </div>
-    </div>
-
-    <div id="roleSelect" class="screen">
-      <div class="role-wrapper">
-        <div class="role-chip">DigitalBridge · 모드 선택</div>
-        <div class="role-title">누구로 이용하시나요?</div>
-        <div class="role-desc">
-          조부모님은 사용법 안내를,<br/>
-          손주는 그 모습을 도와주는 화면을 보게 됩니다.
-        </div>
-
-        <div class="role-boxes">
-          <div class="role-card" id="roleGrandchild">
-            <div class="role-card-icon">🧑‍💻</div>
-            <div class="role-main">손주 모드</div>
-            <div class="role-sub">
-              조부모님께 필요한 기능을<br/>
-              대신 찾아보고 도와주는 화면<br/>
-              <span style="opacity:0.75;">(준비 중)</span>
-            </div>
-          </div>
-
-          <div class="role-card active" id="roleGrandparent">
-            <div class="role-card-icon">👵</div>
-            <div class="role-main">조부모 모드</div>
-            <div class="role-sub">
-              전자기기 사용법이 궁금하시거나<br/>
-              어떤 기기가 필요할지 알고 싶은 분
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="loading2" class="screen">
-      <div>
-        <div class="loading2-title">조부모 모드를 준비하고 있어요</div>
-        <div class="loading2-sub">
-          어르신께 꼭 필요한 전자기기 사용 안내를<br/>
-          보기 좋게 정리하는 중입니다…
-        </div>
-      </div>
-
-      <div class="loader-wrapper">
-        <svg class="loader" viewBox="0 0 80 80">
-          <circle class="loader-bg" cx="40" cy="40" r="30" />
-          <circle class="loader-progress" cx="40" cy="40" r="30" />
-        </svg>
-        <span>잠시만 기다려 주세요</span>
-      </div>
-    </div>
-
-    <div id="main" class="screen">
-      <div class="status-bar">
-        <div class="status-left">
-          <span class="signal-dot"></span>
-          <span>DigitalBridge</span>
-        </div>
-        <div class="status-right">
-          <span>안심 모드</span>
-        </div>
-      </div>
-
-      <div class="header">
-        <div class="header-left">
-          <div class="app-name">DigitalBridge - HOME</div>
-          <div class="app-sub">쉽고 간편한 전자기기 도우미</div>
-        </div>
-        <div class="header-badge">PROJECT · Beta</div>
-      </div>
-
-      <div class="home-body">
-        <div>
-          <div class="home-title">무엇을 도와드릴까요?</div>
-          <div class="home-desc">
-            이마기난스(T)-A조의<br/>
-            쉽고 간편한 디지털 안내 서비스!
-          </div>
-        </div>
-
-        <div class="home-buttons">
-          <button class="home-btn" id="btnUsage">
-            <div>
-              <div class="home-btn-main">모르는 전자기기 사용법 알아보기</div>
-              <div class="home-btn-sub">
-                TV, 세탁기, 에어컨, 전자레인지 등 지금 눈앞에 있는 기기 사용법을 단계별로 안내합니다.
-              </div>
-            </div>
-            <span class="home-btn-icon">📘</span>
-          </button>
-
-          <button class="home-btn secondary" id="btnFindDevice">
-            <div>
-              <div class="home-btn-main">필요한 전자기기 찾기</div>
-              <div class="home-btn-sub">
-                “집이 너무 건조해요”, “청소가 너무 힘들어요”처럼 고민을 말하면 어울리는 전자기기를 추천해 드립니다.
-              </div>
-            </div>
-            <span class="home-btn-icon">🧭</span>
-          </button>
-        </div>
-
-        <div class="info-section">
-          <div class="info-row">
-            <div class="info-card" id="cardFaq">
-              <div class="info-card-header">
-                <div class="info-card-title">자주 묻는 질문</div>
-                <div class="info-card-icon">❓</div>
-              </div>
-              <div class="info-card-text">
-                “TV 소리가 안 나와요”, “리모컨이 안 눌려요” 같은 질문 모음
-              </div>
-            </div>
-
-            <div class="info-card" id="cardToday">
-              <div class="info-card-header">
-                <div class="info-card-title">오늘 많이 본 기능</div>
-                <div class="info-card-icon">⭐</div>
-              </div>
-              <div class="info-card-text">
-                다른 어르신들이 오늘 가장 많이 보신 전자기기 사용법
-              </div>
-            </div>
-          </div>
-
-          <div class="info-card info-card-wide" id="cardEmergency">
-            <div class="info-card-header">
-              <div class="info-card-title">긴급 도움!</div>
-              <div class="info-card-icon">🚨</div>
-            </div>
-            <div class="info-card-text">
-              TV 화면이 안 나와요 / 인터넷이 끊겼어요 / 벨소리가 안 들릴 때
-              바로 따라 할 수 있는 응급 해결 방법을 안내합니다.
-            </div>
-          </div>
-        </div>
-
-        <div class="voice-area">
-          <button class="voice-btn" id="voiceBtn">🎤</button>
-          <div class="voice-label">
-            음성 버튼을 눌러 필요한 서비스를 물어보세요!
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const splash = document.getElementById("splash");
-    const roleSelect = document.getElementById("roleSelect");
-    const loading2 = document.getElementById("loading2");
-    const mainScreen = document.getElementById("main");
-
-    // 1) 앱 로드 후 3초 → 역할 선택 화면으로
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        splash.style.display = "none";
-        roleSelect.classList.add("visible");
-      }, 3000);
-    });
-
-    // 2) 역할 선택
-    const roleGrandparent = document.getElementById("roleGrandparent");
-    const roleGrandchild = document.getElementById("roleGrandchild");
-
-    roleGrandparent.addEventListener("click", () => {
-      roleSelect.classList.remove("visible");
-      loading2.classList.add("visible");
-
-      setTimeout(() => {
-        loading2.classList.remove("visible");
-        mainScreen.classList.add("visible");
-      }, 2000);
-    });
-
-    roleGrandchild.addEventListener("click", () => {
-      alert("손주 모드는 준비 중입니다. 지금은 조부모 모드만 이용 가능합니다.");
-    });
-
-    // 3) 상단 기능 버튼
-    document.getElementById("btnUsage").addEventListener("click", () => {
-      alert("『모르는 전자기기 사용법 알아보기』 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    document.getElementById("btnFindDevice").addEventListener("click", () => {
-      alert("『필요한 전자기기 찾기』 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    // 4) 중간 카드 클릭 이벤트
-    document.getElementById("cardFaq").addEventListener("click", () => {
-      alert("『자주 묻는 질문』 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    document.getElementById("cardToday").addEventListener("click", () => {
-      alert("『오늘 많이 본 기능』 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    document.getElementById("cardEmergency").addEventListener("click", () => {
-      alert("『긴급 도움』 상세 안내 화면으로 이동 (추후 내용 채울 예정)");
-    });
-
-    // 5) 음성 버튼
-    document.getElementById("voiceBtn").addEventListener("click", () => {
-      alert("음성 입력 시작 (예: “밥솥 사용하는 법 알려줘”) – 나중에 음성인식 기능 연결");
-    });
-  </script>
-</body>
-</html>
-
-    .phone {
-      width: 100%;
-      max-width: 420px;
-      aspect-ratio: 9 / 19.5;
-      background: #020617;
-      border-radius: 28px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-      color: #f9fafb;
-    }
-
-    .screen {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    /* 로더 */
-    .loader {
-      width: 72px;
-      height: 72px;
-      transform: rotate(-90deg);
-    }
-    .loader circle {
-      fill: none;
-      stroke-width: 4;
-      stroke-linecap: round;
-    }
-    .loader-bg { stroke: rgba(148,163,184,0.35); }
-    .loader-progress {
-      stroke: #38bdf8;
-      stroke-dasharray: 188.4;
-      stroke-dashoffset: 188.4;
-      animation: progressFill 3s ease-out forwards;
-    }
-    @keyframes progressFill {
-      to { stroke-dashoffset: 0; }
-    }
-
-    /* 1. 스플래시 */
-    #splash {
-      background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000 100%);
-      text-align: center;
-      gap: 18px;
-    }
-    .splash-title {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-    .brand {
-      font-size: 18px;
-      font-weight: 600;
-      margin-top: 4px;
-      color: #38bdf8;
-    }
-    .splash-sub {
-      font-size: 13px;
-      color: #cbd5f5;
-      margin-top: 6px;
-    }
-    .loader-wrapper {
-      margin-top: 18px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      color: #9ca3af;
-      font-size: 11px;
-    }
-
-    /* 2. 역할 선택 */
-    #roleSelect {
-      background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 100%);
-      display: none;
-    }
-    #roleSelect.visible { display: flex; }
-
-    .role-wrapper {
-      width: 100%;
-      padding: 28px 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-    .role-chip {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      color: #cbd5f5;
-      background: rgba(15,23,42,0.9);
-    }
-    .role-title {
-      font-size: 19px;
-      font-weight: 700;
-      text-align: center;
-    }
-    .role-desc {
-      font-size: 12px;
-      color: #9ca3af;
-      text-align: center;
-      line-height: 1.5;
-    }
-    .role-boxes {
-      margin-top: 8px;
-      width: 100%;
-      display: flex;
-      gap: 12px;
-    }
-    .role-card {
-      flex: 1;
-      border-radius: 18px;
-      padding: 18px 10px;
-      background: linear-gradient(150deg, #020617 0, #020617 45%, #0f172a 100%);
-      border: 1px solid rgba(148,163,184,0.6);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      text-align: center;
-      box-shadow: 0 10px 24px rgba(15,23,42,0.9);
-      transition: 0.18s ease;
-    }
-    .role-card-icon { font-size: 26px; }
-    .role-main { font-size: 15px; font-weight: 600; }
-    .role-sub { font-size: 11px; color: #e5e7eb; opacity: 0.9; line-height: 1.4; }
-    .role-card.active {
-      background: linear-gradient(145deg, #1d4ed8 0, #38bdf8 100%);
-      border-color: #93c5fd;
-    }
-
-    /* 3. 두 번째 로딩 */
-    #loading2 {
-      background: radial-gradient(circle at top, #020617 0, #020617 55%, #000 100%);
-      display: none;
-      text-align: center;
-      gap: 16px;
-    }
-    #loading2.visible { display: flex; }
-    .loading2-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
-    .loading2-sub { font-size: 12px; color: #9ca3af; }
-
-    /* 4. 메인 화면 */
-    #main {
-      background: linear-gradient(180deg, #0f172a 0, #020617 42%, #020617 100%);
-      padding: 18px 18px 24px;
-      display: none;
-    }
-    #main.visible { display: flex; }
-
-    .status-bar {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      color: #9ca3af;
-      opacity: 0.9;
-      margin-bottom: 6px;
-    }
-    .signal-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #22c55e;
-    }
-
-    .header {
-      width: 100%;
-      margin-top: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-    .header-left { display: flex; flex-direction: column; gap: 4px; }
-    .app-name { font-size: 19px; font-weight: 700; }
-    .app-sub { font-size: 12px; color: #a5b4fc; }
-    .header-badge {
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      font-size: 11px;
-      background: rgba(15,23,42,0.85);
-    }
-
-    .home-body {
-      flex: 1;
-      width: 100%;
-      margin-top: 4px;
-      background: rgba(15,23,42,0.96);
-      border-radius: 20px;
-      border: 1px solid rgba(31,41,55,0.85);
-      padding: 18px 16px 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 14px;
-      position: relative;
-    }
-    .home-title { font-size: 16px; font-weight: 600; }
-    .home-desc { font-size: 12px; color: #9ca3af; line-height: 1.5; }
-
-    .home-buttons {
-      margin-top: 4px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .home-btn {
-      width: 100%;
-      border-radius: 14px;
-      padding: 14px 14px;
-      border: none;
-      text-align: left;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: linear-gradient(135deg, #1e293b 0, #0f172a 100%);
-      color: #e5e7eb;
-      box-shadow: 0 8px 18px rgba(15,23,42,0.8);
-    }
-    .home-btn.secondary {
-      background: linear-gradient(135deg, #0b1120 0, #020617 100%);
-      box-shadow: 0 6px 14px rgba(15,23,42,0.6);
-    }
-    .home-btn-main { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-    .home-btn-sub { font-size: 11px; color: #9ca3af; }
-    .home-btn-icon { font-size: 20px; opacity: 0.9; }
-
-    /* 중간 카드 3개 */
+    /* 2) 하단 카드 영역: 역시 남은 공간을 차지하며 늘어남 */
     .info-section {
       display: flex;
       flex-direction: column;
       gap: 10px;
+      flex: 1; /* 화면 비율 1 (상단 버튼 영역과 동일한 비율로 커짐) */
       width: 100%;
-      margin-top: 6px;
     }
     .info-row {
       display: flex;
       gap: 10px;
       width: 100%;
+      flex: 1; /* 윗줄 카드들도 높이 늘어남 */
     }
+    
     .info-card {
       flex: 1;
+      height: 100%; /* 부모 높이에 맞춤 */
       padding: 14px 16px;
       border-radius: 16px;
       background: rgba(15,23,42,0.98);
       border: 1px solid rgba(55,65,81,0.95);
       display: flex;
       flex-direction: column;
+      justify-content: center; /* 내용 수직 중앙 정렬 */
       gap: 6px;
       font-size: 11px;
       cursor: pointer;
-      transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease,
-        border-color 0.15s ease,
-        background 0.15s ease;
-      min-height: 80px;
+      transition: all 0.15s ease;
     }
+    
     .info-card-wide {
       width: 100%;
-      min-height: 82px;
+      flex: 1; /* 아랫줄(긴급도움) 카드도 높이 늘어남 */
     }
+
     .info-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 12px 24px rgba(15,23,42,0.9);
@@ -2053,15 +329,16 @@
 
     /* 음성 영역 */
     .voice-area {
-      margin-top: auto;
+      /* flex: 0 (고정 크기) */
+      padding-top: 4px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
     }
     .voice-btn {
-      width: 68px;
-      height: 68px;
+      width: 64px;
+      height: 64px;
       border-radius: 999px;
       border: none;
       background: radial-gradient(circle, #38bdf8 0, #1d4ed8 55%, #020617 100%);
@@ -2069,7 +346,7 @@
       justify-content: center;
       align-items: center;
       color: #f9fafb;
-      font-size: 26px;
+      font-size: 24px;
       box-shadow: 0 10px 24px rgba(59,130,246,0.7);
       cursor: pointer;
     }
@@ -2082,7 +359,6 @@
 </head>
 <body>
   <div class="phone">
-    <!-- 1. 스플래시 -->
     <div id="splash" class="screen">
       <div>
         <div class="splash-title">PROJECT</div>
@@ -2101,7 +377,6 @@
       </div>
     </div>
 
-    <!-- 2. 역할 선택 -->
     <div id="roleSelect" class="screen">
       <div class="role-wrapper">
         <div class="role-chip">DigitalBridge · 모드 선택</div>
@@ -2134,7 +409,6 @@
       </div>
     </div>
 
-    <!-- 3. 두 번째 로딩 -->
     <div id="loading2" class="screen">
       <div>
         <div class="loading2-title">조부모 모드를 준비하고 있어요</div>
@@ -2153,9 +427,7 @@
       </div>
     </div>
 
-    <!-- 4. 메인 홈 -->
     <div id="main" class="screen">
-      <!-- 상태바 -->
       <div class="status-bar">
         <div class="status-left">
           <span class="signal-dot"></span>
@@ -2166,7 +438,6 @@
         </div>
       </div>
 
-      <!-- 헤더 -->
       <div class="header">
         <div class="header-left">
           <div class="app-name">DigitalBridge - HOME</div>
@@ -2175,9 +446,8 @@
         <div class="header-badge">PROJECT · Beta</div>
       </div>
 
-      <!-- 본문 -->
       <div class="home-body">
-        <div>
+        <div class="home-title-area">
           <div class="home-title">무엇을 도와드릴까요?</div>
           <div class="home-desc">
             이마기난스(T)-A조의<br/>
@@ -2185,13 +455,12 @@
           </div>
         </div>
 
-        <!-- 상단 두 개 버튼 -->
         <div class="home-buttons">
           <button class="home-btn" id="btnUsage">
             <div>
               <div class="home-btn-main">모르는 전자기기 사용법 알아보기</div>
               <div class="home-btn-sub">
-                TV, 세탁기, 에어컨, 전자레인지 등 지금 눈앞에 있는 기기 사용법을 단계별로 안내합니다.
+                TV, 세탁기, 에어컨 등 기기 사용법 안내
               </div>
             </div>
             <span class="home-btn-icon">📘</span>
@@ -2201,57 +470,51 @@
             <div>
               <div class="home-btn-main">필요한 전자기기 찾기</div>
               <div class="home-btn-sub">
-                “집이 너무 건조해요”, “청소가 너무 힘들어요”처럼 고민을 말하면 어울리는 전자기기를 추천해 드립니다.
+                고민을 말하면 어울리는 기기 추천
               </div>
             </div>
             <span class="home-btn-icon">🧭</span>
           </button>
         </div>
 
-        <!-- 중간 카드 1,2,3 -->
         <div class="info-section">
           <div class="info-row">
-            <!-- 1번: 자주 묻는 질문 -->
             <div class="info-card" id="cardFaq">
               <div class="info-card-header">
                 <div class="info-card-title">자주 묻는 질문</div>
                 <div class="info-card-icon">❓</div>
               </div>
               <div class="info-card-text">
-                “TV 소리가 안 나와요”, “리모컨이 안 눌려요” 같은 질문을 한 번에 모아둔 메뉴입니다.
+                “리모컨이 안 눌려요” 등 질문 모음
               </div>
             </div>
 
-            <!-- 2번: 오늘 많이 본 기능 -->
             <div class="info-card" id="cardToday">
               <div class="info-card-header">
                 <div class="info-card-title">오늘 많이 본 기능</div>
                 <div class="info-card-icon">⭐</div>
               </div>
               <div class="info-card-text">
-                다른 어르신들이 오늘 가장 많이 보신 전자기기 사용법을 보여드려요.
+                다른 분들이 많이 본 내용
               </div>
             </div>
           </div>
 
-          <!-- 3번: 긴급 도움 -->
           <div class="info-card info-card-wide" id="cardEmergency">
             <div class="info-card-header">
               <div class="info-card-title">긴급 도움!</div>
               <div class="info-card-icon">🚨</div>
             </div>
             <div class="info-card-text">
-              TV 화면이 안 나와요 / 인터넷이 끊겼어요 / 벨소리가 안 들릴 때
-              바로 따라 할 수 있는 응급 해결 방법을 안내합니다.
+              TV 화면 안 나옴 / 인터넷 끊김 해결 방법
             </div>
           </div>
         </div>
 
-        <!-- 음성 입력 -->
         <div class="voice-area">
           <button class="voice-btn" id="voiceBtn">🎤</button>
           <div class="voice-label">
-            음성 버튼을 눌러 필요한 서비스를 물어보세요!
+            음성 버튼을 눌러보세요
           </div>
         </div>
       </div>
